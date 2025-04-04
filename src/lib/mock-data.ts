@@ -1,5 +1,4 @@
-
-import { User, DaroodCount, MediaItem, LibraryItem } from "@/types";
+import { User, DaroodCount, MediaItem, LibraryItem, CountSummary, CommunityStats } from "@/types";
 
 // Mock users
 export const mockUsers: User[] = [
@@ -167,3 +166,116 @@ export const mockLibraryItems: LibraryItem[] = [
     createdBy: "admin"
   }
 ];
+
+/**
+ * Generates mock count data for a specific user
+ * @param userId The user ID to generate counts for
+ * @returns Array of DaroodCount objects
+ */
+export const generateMockCounts = (userId: string): DaroodCount[] => {
+  // Filter existing mock counts for this user
+  const userCounts = mockCounts.filter(count => count.userId === userId);
+  
+  // If we have counts for this user, return them
+  if (userCounts.length > 0) {
+    return userCounts;
+  }
+  
+  // Otherwise, generate some default counts for new users
+  const today = new Date().toISOString().split('T')[0];
+  const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+  
+  return [
+    { userId, count: 10, date: yesterday },
+    { userId, count: 15, date: today }
+  ];
+};
+
+/**
+ * Calculates summary statistics for a user's counts
+ * @param counts Array of user count objects
+ * @returns CountSummary object with daily, monthly, annual and total stats
+ */
+export const calculateUserSummary = (counts: DaroodCount[]): CountSummary => {
+  const today = new Date().toISOString().split('T')[0];
+  const currentMonth = today.substring(0, 7); // YYYY-MM format
+  const currentYear = today.substring(0, 4); // YYYY format
+  
+  const summary: CountSummary = {
+    daily: 0,
+    monthly: 0,
+    annual: 0,
+    total: 0
+  };
+  
+  // Calculate each metric
+  counts.forEach(count => {
+    // Add to total count
+    summary.total += count.count;
+    
+    // Add to daily count if it's today
+    if (count.date === today) {
+      summary.daily += count.count;
+    }
+    
+    // Add to monthly count if it's this month
+    if (count.date.startsWith(currentMonth)) {
+      summary.monthly += count.count;
+    }
+    
+    // Add to annual count if it's this year
+    if (count.date.startsWith(currentYear)) {
+      summary.annual += count.count;
+    }
+  });
+  
+  return summary;
+};
+
+/**
+ * Calculates community-wide statistics
+ * @returns CommunityStats object with community-wide metrics
+ */
+export const calculateCommunityStats = (): CommunityStats => {
+  const today = new Date().toISOString().split('T')[0];
+  const currentMonth = today.substring(0, 7); // YYYY-MM format
+  const currentYear = today.substring(0, 4); // YYYY format
+  
+  const stats: CommunityStats = {
+    daily: 0,
+    monthly: 0,
+    annual: 0,
+    total: 0,
+    usersCount: mockUsers.length // Total number of users
+  };
+  
+  // Calculate community-wide metrics from all counts
+  mockCounts.forEach(count => {
+    // Add to total count
+    stats.total += count.count;
+    
+    // Add to daily count if it's today
+    if (count.date === today) {
+      stats.daily += count.count;
+    }
+    
+    // Add to monthly count if it's this month
+    if (count.date.startsWith(currentMonth)) {
+      stats.monthly += count.count;
+    }
+    
+    // Add to annual count if it's this year
+    if (count.date.startsWith(currentYear)) {
+      stats.annual += count.count;
+    }
+  });
+  
+  // Add some random counts to make the stats more interesting
+  stats.daily += 750;
+  stats.monthly += 22500;
+  stats.annual += 185000;
+  stats.total += 958000;
+  stats.usersCount += 120; // Additional mock users beyond our sample
+  
+  return stats;
+};
