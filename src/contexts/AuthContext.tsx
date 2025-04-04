@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { User } from "@/types";
 import { mockUsers } from "@/lib/mock-data";
@@ -7,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 interface AuthContextType {
   currentUser: User | null;
   loading: boolean;
+  isAdmin: boolean;
   loginWithGoogle: () => Promise<void>;
   loginWithEmail: (email: string, password: string) => Promise<void>;
   loginWithPhone: (phoneNumber: string, verificationCode: string) => Promise<void>;
@@ -19,6 +19,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+
+  // Check if current user is an admin
+  const isAdmin = currentUser?.role === "admin";
 
   // Simulate checking for user session on app load
   useEffect(() => {
@@ -68,13 +71,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 1000));
       const user = mockUsers.find(u => u.email === email && u.provider === "email");
+      
       if (!user) {
         throw new Error("Invalid credentials");
       }
+      
       setCurrentUser(user);
+      
+      // Show different toast for admin vs regular user
       toast({
-        title: "Login Successful",
-        description: "Welcome back!",
+        title: user.role === "admin" 
+          ? "Admin Login Successful" 
+          : "Login Successful",
+        description: user.role === "admin" 
+          ? "Welcome, Administrator" 
+          : "Welcome back!",
       });
     } catch (error) {
       toast({
@@ -136,6 +147,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const value = {
     currentUser,
     loading,
+    isAdmin,
     loginWithGoogle,
     loginWithEmail,
     loginWithPhone,

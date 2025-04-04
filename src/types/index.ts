@@ -1,18 +1,7 @@
-
-export interface User {
-  id: string;
-  email?: string;
-  phoneNumber?: string;
-  name?: string;
-  photoURL?: string;
-  provider: 'google' | 'email' | 'phone';
-  role?: 'user' | 'admin';
-}
-
 export interface DaroodCount {
   userId: string;
   count: number;
-  date: string; // ISO date string
+  date: string; // ISO date string (YYYY-MM-DD)
 }
 
 export interface CountSummary {
@@ -30,20 +19,32 @@ export interface MediaItem {
   id: string;
   title: string;
   description: string;
-  type: 'image' | 'video' | 'link';
+  type: "video" | "image" | "link";
   url: string;
   thumbnailUrl?: string;
-  createdAt: string;
-  createdBy: string;
+  createdAt: string; // ISO date string
+  createdBy: string; // User ID of creator
 }
 
 export interface LibraryItem {
   id: string;
   title: string;
   description: string;
-  type: 'pdf' | 'image';
+  type: "pdf" | "image";
   fileUrl: string;
   thumbnailUrl?: string;
-  createdAt: string;
-  createdBy: string;
+  createdAt: string; // ISO date string
+  createdBy: string; // User ID of creator
+}
+
+export type UserRole = "user" | "admin";
+
+export interface User {
+  id: string;
+  email?: string;
+  phoneNumber?: string;
+  name: string;
+  role: UserRole;
+  provider: "email" | "phone" | "google";
+  photoURL?: string;
 }
