@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { DaroodCount, CountSummary, CommunityStats } from "@/types";
 import { useAuth } from "./AuthContext";
@@ -10,6 +9,7 @@ interface CounterContextType {
   userSummary: CountSummary;
   communityStats: CommunityStats;
   incrementCount: () => Promise<void>;
+  addManualCount: (count: number) => Promise<void>;
   isLoading: boolean;
 }
 
@@ -73,6 +73,86 @@ export const CounterProvider = ({ children }: { children: React.ReactNode }) => 
       }
     }
   }, [currentUser, toast]);
+
+  // Add manual count function
+  const addManualCount = async (count: number): Promise<void> => {
+    if (!currentUser) {
+      toast({
+        title: "Error",
+        description: "You must be logged in to add Darood count",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (count <= 0) {
+      toast({
+        title: "Invalid Input",
+        description: "Please enter a positive number",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    
+    try {
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Get today's date
+      const today = new Date().toISOString().split('T')[0];
+      
+      // Create updated counts
+      const updatedCounts = [...userCounts];
+      const todayIndex = updatedCounts.findIndex(c => c.date === today);
+      
+      if (todayIndex !== -1) {
+        // Update existing count
+        updatedCounts[todayIndex] = {
+          ...updatedCounts[todayIndex],
+          count: updatedCounts[todayIndex].count + count
+        };
+      } else {
+        // Add new count for today
+        updatedCounts.push({
+          userId: currentUser.id,
+          date: today,
+          count: count
+        });
+      }
+      
+      // Update state
+      setUserCounts(updatedCounts);
+      
+      // Recalculate user summary
+      const newSummary = calculateUserSummary(updatedCounts);
+      setUserSummary(newSummary);
+      
+      // Update community stats
+      setCommunityStats(prev => ({
+        ...prev,
+        daily: prev.daily + count,
+        monthly: prev.monthly + count,
+        annual: prev.annual + count,
+        total: prev.total + count
+      }));
+
+      toast({
+        title: "Success",
+        description: `Added ${count} Darood recitations`,
+        variant: "default"
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Could not update count",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Increment count function
   const incrementCount = async (): Promise<void> => {
@@ -146,6 +226,7 @@ export const CounterProvider = ({ children }: { children: React.ReactNode }) => 
     userSummary,
     communityStats,
     incrementCount,
+    addManualCount,
     isLoading
   };
 

@@ -6,6 +6,7 @@ import { useCounter } from "@/contexts/CounterContext";
 import Header from "@/components/Header";
 import CounterButton from "@/components/CounterButton";
 import CounterStats from "@/components/CounterStats";
+import ManualCountForm from "@/components/ManualCountForm";
 import { Card, CardContent } from "@/components/ui/card";
 
 const Dashboard = () => {
@@ -62,6 +63,8 @@ const Dashboard = () => {
                   </div>
                 </CardContent>
               </Card>
+              
+              <ManualCountForm />
               
               <Card className="bg-white shadow-lg border-0">
                 <CardContent className="p-6">
