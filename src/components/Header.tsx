@@ -12,8 +12,7 @@ import {
 import { cn } from "@/lib/utils";
 
 const Header = () => {
-  const { currentUser, logout } = useAuth();
-  const isAdmin = currentUser?.email === "admin@example.com";
+  const { currentUser, logout, isAdmin } = useAuth();
 
   return (
     <header className="bg-white shadow-md sticky top-0 z-10">
@@ -26,46 +25,34 @@ const Header = () => {
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
-                <Link to="/" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Home
-                  </NavigationMenuLink>
+                <Link to="/" className={navigationMenuTriggerStyle()}>
+                  Home
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link to="/about" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    About
-                  </NavigationMenuLink>
+                <Link to="/about" className={navigationMenuTriggerStyle()}>
+                  About
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link to="/library" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Library
-                  </NavigationMenuLink>
+                <Link to="/library" className={navigationMenuTriggerStyle()}>
+                  Library
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link to="/media" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Media
-                  </NavigationMenuLink>
+                <Link to="/media" className={navigationMenuTriggerStyle()}>
+                  Media
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link to="/contact" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Contact
-                  </NavigationMenuLink>
+                <Link to="/contact" className={navigationMenuTriggerStyle()}>
+                  Contact
                 </Link>
               </NavigationMenuItem>
               {isAdmin && (
                 <NavigationMenuItem>
-                  <Link to="/admin" legacyBehavior passHref>
-                    <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "bg-amber-100 hover:bg-amber-200 text-amber-800")}>
-                      Admin
-                    </NavigationMenuLink>
+                  <Link to="/admin" className={cn(navigationMenuTriggerStyle(), "bg-amber-100 hover:bg-amber-200 text-amber-800")}>
+                    Admin
                   </Link>
                 </NavigationMenuItem>
               )}
