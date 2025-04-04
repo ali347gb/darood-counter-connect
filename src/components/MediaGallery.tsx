@@ -1,21 +1,50 @@
 
 import React, { useState } from "react";
 import { MediaItem } from "@/types";
-import { Pencil, Play, ExternalLink } from "lucide-react";
+import { Pencil, Play, ExternalLink, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface MediaGalleryProps {
   items: MediaItem[];
   isAdmin: boolean;
+  onEdit?: (media: MediaItem) => void;
+  onDelete?: (id: string) => void;
 }
 
-const MediaGallery: React.FC<MediaGalleryProps> = ({ items, isAdmin }) => {
+const MediaGallery: React.FC<MediaGalleryProps> = ({ 
+  items, 
+  isAdmin, 
+  onEdit, 
+  onDelete 
+}) => {
   const [activeTab, setActiveTab] = useState("all");
+  const [mediaToDelete, setMediaToDelete] = useState<MediaItem | null>(null);
   
   const filteredItems = activeTab === "all" 
     ? items 
     : items.filter(item => item.type === activeTab);
+
+  const handleDeleteClick = (media: MediaItem) => {
+    setMediaToDelete(media);
+  };
+
+  const confirmDelete = () => {
+    if (mediaToDelete && onDelete) {
+      onDelete(mediaToDelete.id);
+      setMediaToDelete(null);
+    }
+  };
 
   return (
     <div>
@@ -80,19 +109,49 @@ const MediaGallery: React.FC<MediaGalleryProps> = ({ items, isAdmin }) => {
                 </Button>
                 
                 {isAdmin && (
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    className="text-emerald-700 hover:bg-emerald-50"
-                  >
-                    <Pencil className="h-4 w-4" />
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      className="text-emerald-700 hover:bg-emerald-50"
+                      onClick={() => onEdit && onEdit(item)}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      className="text-red-600 hover:bg-red-50"
+                      onClick={() => handleDeleteClick(item)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                 )}
               </div>
             </div>
           </div>
         ))}
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={!!mediaToDelete} onOpenChange={(open) => !open && setMediaToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete the media item 
+              "{mediaToDelete?.title}". This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="bg-red-600 hover:bg-red-700">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
