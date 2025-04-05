@@ -7,21 +7,33 @@ export const mockUsers: User[] = [
     email: "user@example.com",
     name: "Regular User",
     provider: "email",
-    role: "user"
+    role: "user",
+    location: {
+      city: "New York",
+      country: "USA"
+    }
   },
   {
     id: "user2",
     email: "admin@example.com",
     name: "Admin User",
     provider: "email",
-    role: "admin"
+    role: "admin",
+    location: {
+      city: "San Francisco",
+      country: "USA"
+    }
   },
   {
     id: "user3",
     phoneNumber: "+15551234567",
     name: "Phone User",
     provider: "phone",
-    role: "user"
+    role: "user",
+    location: {
+      city: "London",
+      country: "UK"
+    }
   },
   {
     id: "user4",
@@ -29,7 +41,11 @@ export const mockUsers: User[] = [
     name: "Google User",
     photoURL: "https://via.placeholder.com/150",
     provider: "google",
-    role: "user"
+    role: "user",
+    location: {
+      city: "Toronto",
+      country: "Canada"
+    }
   }
 ];
 

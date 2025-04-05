@@ -27,7 +27,7 @@ import {
   ChartLegendContent,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
 
 // Get current year
 const currentYear = new Date().getFullYear();
@@ -159,16 +159,15 @@ const ParticipantsStatsReport = () => {
           <BarChart data={statsData}>
             <XAxis dataKey="name" />
             <YAxis />
-            <Tooltip 
-              content={({ active, payload }) => (
+            <ChartTooltip 
+              content={(props) => (
                 <ChartTooltipContent 
-                  active={active} 
-                  payload={payload} 
+                  {...props}
                 />
               )} 
             />
             <ChartLegend
-              content={props => (
+              content={(props) => (
                 <ChartLegendContent 
                   {...props} 
                 />

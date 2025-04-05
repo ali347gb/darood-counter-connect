@@ -28,9 +28,9 @@ const ParticipantsReport = () => {
   const filteredParticipants = participants.filter(
     (user) =>
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (user.location?.city || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (user.location?.country || "").toLowerCase().includes(searchTerm.toLowerCase())
+      (user.email?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+      (user.location?.city?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+      (user.location?.country?.toLowerCase() || "").includes(searchTerm.toLowerCase())
   );
 
   const refreshData = () => {
@@ -54,7 +54,7 @@ const ParticipantsReport = () => {
       ...filteredParticipants.map((user) => {
         return [
           user.name,
-          user.email,
+          user.email || "N/A",
           user.phoneNumber || "N/A",
           user.location?.city || "N/A",
           user.location?.country || "N/A",
@@ -132,7 +132,7 @@ const ParticipantsReport = () => {
               filteredParticipants.map((user) => (
                 <TableRow key={user.id}>
                   <TableCell className="font-medium">{user.name}</TableCell>
-                  <TableCell>{user.email}</TableCell>
+                  <TableCell>{user.email || "N/A"}</TableCell>
                   <TableCell>{user.phoneNumber || "N/A"}</TableCell>
                   <TableCell>{user.location?.city || "N/A"}</TableCell>
                   <TableCell>{user.location?.country || "N/A"}</TableCell>

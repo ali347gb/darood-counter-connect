@@ -40,6 +40,11 @@ export interface LibraryItem {
 
 export type UserRole = "user" | "admin";
 
+export interface UserLocation {
+  city?: string;
+  country?: string;
+}
+
 export interface User {
   id: string;
   email?: string;
@@ -48,4 +53,5 @@ export interface User {
   role: UserRole;
   provider: "email" | "phone" | "google";
   photoURL?: string;
+  location?: UserLocation;
 }
