@@ -10,6 +10,13 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
+import { ChevronDown } from "lucide-react";
 
 const Header = () => {
   const { currentUser, logout, isAdmin } = useAuth();
@@ -51,9 +58,22 @@ const Header = () => {
               </NavigationMenuItem>
               {isAdmin && (
                 <NavigationMenuItem>
-                  <Link to="/admin" className={cn(navigationMenuTriggerStyle(), "bg-amber-100 hover:bg-amber-200 text-amber-800")}>
-                    Admin
-                  </Link>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button className={cn(navigationMenuTriggerStyle(), "bg-amber-100 hover:bg-amber-200 text-amber-800 flex items-center")}>
+                        Admin
+                        <ChevronDown className="ml-1 h-4 w-4" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="bg-white">
+                      <DropdownMenuItem asChild>
+                        <Link to="/admin" className="cursor-pointer">Dashboard</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to="/admin/reports" className="cursor-pointer">Reports</Link>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </NavigationMenuItem>
               )}
             </NavigationMenuList>
