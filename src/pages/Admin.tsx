@@ -5,7 +5,7 @@ import { Navigate, Link } from "react-router-dom";
 import Header from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { BarChart4, ListFilter, Users } from "lucide-react";
+import { BarChart4, ListFilter, Users, Edit } from "lucide-react";
 
 const Admin = () => {
   const { currentUser, isAdmin } = useAuth();
@@ -28,7 +28,7 @@ const Admin = () => {
               Welcome to the admin dashboard. From here, you can access various administrative functions and reports.
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <Card>
                 <CardContent className="pt-6">
                   <div className="flex flex-col items-center text-center space-y-4">
@@ -74,6 +74,23 @@ const Admin = () => {
                     <Link to="/admin/reports?tab=visitors" className="mt-2">
                       <Button className="w-full bg-emerald-600 hover:bg-emerald-700">
                         View Visitors
+                      </Button>
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="flex flex-col items-center text-center space-y-4">
+                    <Edit className="h-12 w-12 text-emerald-600" />
+                    <CardTitle className="text-xl">Edit Counters</CardTitle>
+                    <p className="text-muted-foreground">
+                      Manage and edit user Darood counts.
+                    </p>
+                    <Link to="/admin/edit-counters" className="mt-2">
+                      <Button className="w-full bg-emerald-600 hover:bg-emerald-700">
+                        Edit Counters
                       </Button>
                     </Link>
                   </div>

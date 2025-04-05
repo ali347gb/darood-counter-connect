@@ -15,6 +15,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Admin from "./pages/Admin";
 import AdminReports from "./pages/AdminReports";
+import AdminEditCounters from "./pages/AdminEditCounters";
 import NotFound from "./pages/NotFound";
 
 // Create a new QueryClient instance inside the component
@@ -40,6 +41,7 @@ const App = () => {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/admin/reports" element={<AdminReports />} />
+                <Route path="/admin/edit-counters" element={<AdminEditCounters />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
