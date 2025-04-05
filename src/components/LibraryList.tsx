@@ -36,6 +36,15 @@ const LibraryList: React.FC<LibraryListProps> = ({
     }
   };
 
+  const openResource = (url: string, type: string) => {
+    // For local blob URLs or uploaded files, we need to handle them differently
+    if (url.startsWith('blob:')) {
+      window.open(url, '_blank');
+    } else {
+      window.open(url, '_blank');
+    }
+  };
+
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -66,7 +75,7 @@ const LibraryList: React.FC<LibraryListProps> = ({
                   variant="outline" 
                   size="sm"
                   className="text-emerald-700 border-emerald-200 hover:bg-emerald-50"
-                  onClick={() => window.open(item.fileUrl, "_blank")}
+                  onClick={() => openResource(item.fileUrl, item.type)}
                 >
                   <Download className="mr-1 h-4 w-4" />
                   Download
