@@ -1,7 +1,7 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Header from "@/components/Header";
 import ParticipantsReport from "@/components/ParticipantsReport";
@@ -12,6 +12,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 const AdminReports = () => {
   const { currentUser, isAdmin } = useAuth();
   const [activeTab, setActiveTab] = useState("participants");
+  const location = useLocation();
+
+  // If a tab is specified in the URL query params, use that tab
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const tabParam = params.get("tab");
+    if (tabParam && ["participants", "stats", "visitors"].includes(tabParam)) {
+      setActiveTab(tabParam);
+    }
+  }, [location.search]);
 
   // If user is not admin, redirect to home page
   if (!currentUser || !isAdmin) {
