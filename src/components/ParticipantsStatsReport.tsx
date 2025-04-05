@@ -21,13 +21,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  ChartContainer,
-  ChartTooltip,
-  ChartLegend,
-  ChartLegendContent,
-  ChartTooltipContent,
+  ChartContainer
 } from "@/components/ui/chart";
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend } from "recharts";
 
 // Get current year
 const currentYear = new Date().getFullYear();
@@ -107,6 +103,23 @@ const ParticipantsStatsReport = () => {
     });
   };
 
+  // Custom tooltip component for recharts
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-white p-3 border rounded shadow-md">
+          <p className="font-bold">{label}</p>
+          {payload.map((entry: any, index: number) => (
+            <p key={index} style={{ color: entry.color }}>
+              {entry.name}: {entry.value}
+            </p>
+          ))}
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between gap-4">
@@ -159,20 +172,8 @@ const ParticipantsStatsReport = () => {
           <BarChart data={statsData}>
             <XAxis dataKey="name" />
             <YAxis />
-            <ChartTooltip 
-              content={(props) => (
-                <ChartTooltipContent 
-                  {...props}
-                />
-              )} 
-            />
-            <ChartLegend
-              content={(props) => (
-                <ChartLegendContent 
-                  {...props} 
-                />
-              )}
-            />
+            <Tooltip content={<CustomTooltip />} />
+            <Legend />
             <Bar dataKey="monthly" fill="var(--color-monthly)" />
             <Bar dataKey="annual" fill="var(--color-annual)" />
           </BarChart>
