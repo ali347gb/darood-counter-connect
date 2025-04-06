@@ -3,6 +3,17 @@ import { User } from "@/types";
 import { mockUsers } from "@/lib/mock-data";
 import { useToast } from "@/hooks/use-toast";
 
+interface RegisterParams {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  whatsappNumber: string;
+  country: string;
+  state: string;
+  city: string;
+}
+
 interface AuthContextType {
   currentUser: User | null;
   loading: boolean;
@@ -10,6 +21,7 @@ interface AuthContextType {
   loginWithGoogle: () => Promise<void>;
   loginWithEmail: (email: string, password: string) => Promise<void>;
   loginWithPhone: (phoneNumber: string, verificationCode: string) => Promise<void>;
+  registerWithEmail: (params: RegisterParams) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -125,6 +137,45 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const registerWithEmail = async (params: RegisterParams): Promise<void> => {
+    setLoading(true);
+    try {
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Create a new user
+      const newUser: User = {
+        id: `user-${Date.now()}`,
+        name: `${params.firstName} ${params.lastName}`,
+        email: params.email,
+        phoneNumber: params.whatsappNumber,
+        provider: "email",
+        role: "user",
+        avatar: "",
+        country: params.country,
+        state: params.state,
+        city: params.city,
+        created_at: new Date().toISOString(),
+      };
+      
+      setCurrentUser(newUser);
+      
+      toast({
+        title: "Registration Successful",
+        description: "Welcome to Markaz-e-Darood!",
+      });
+    } catch (error) {
+      toast({
+        title: "Registration Failed",
+        description: "Could not create your account",
+        variant: "destructive"
+      });
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logout = async (): Promise<void> => {
     try {
       // Simulate API call delay
@@ -151,6 +202,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     loginWithGoogle,
     loginWithEmail,
     loginWithPhone,
+    registerWithEmail,
     logout,
   };
 
