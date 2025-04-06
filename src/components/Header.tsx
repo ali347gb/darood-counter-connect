@@ -33,7 +33,7 @@ const Header = () => {
       <div className="container mx-auto px-4 py-3">
         <div className="flex justify-between items-center">
           <Link to="/" className="text-2xl font-bold text-emerald-800">
-            Darood Counter
+            Markaz-e-Darood
           </Link>
 
           {/* Desktop Navigation */}
