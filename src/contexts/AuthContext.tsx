@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { User } from "@/types";
 import { mockUsers } from "@/lib/mock-data";
@@ -33,10 +32,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
-  // Check if current user is an admin
   const isAdmin = currentUser?.role === "admin";
 
-  // Simulate checking for user session on app load
   useEffect(() => {
     const savedUser = localStorage.getItem("darood-app-user");
     if (savedUser) {
@@ -45,7 +42,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setLoading(false);
   }, []);
 
-  // Save user to localStorage when it changes
   useEffect(() => {
     if (currentUser) {
       localStorage.setItem("darood-app-user", JSON.stringify(currentUser));
@@ -54,13 +50,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [currentUser]);
 
-  // Mock authentication methods
   const loginWithGoogle = async (): Promise<void> => {
     setLoading(true);
     try {
-      // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 1000));
-      // For demo, just use the first mock user
       setCurrentUser(mockUsers.find(user => user.provider === "google") || mockUsers[0]);
       toast({
         title: "Login Successful",
@@ -81,7 +74,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const loginWithEmail = async (email: string, password: string): Promise<void> => {
     setLoading(true);
     try {
-      // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 1000));
       const user = mockUsers.find(u => u.email === email && u.provider === "email");
       
@@ -91,7 +83,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       setCurrentUser(user);
       
-      // Show different toast for admin vs regular user
       toast({
         title: user.role === "admin" 
           ? "Admin Login Successful" 
@@ -115,7 +106,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const loginWithPhone = async (phoneNumber: string, verificationCode: string): Promise<void> => {
     setLoading(true);
     try {
-      // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 1000));
       const user = mockUsers.find(u => u.phoneNumber === phoneNumber && u.provider === "phone");
       if (!user || verificationCode !== "123456") {
@@ -141,10 +131,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const registerWithEmail = async (params: RegisterParams): Promise<void> => {
     setLoading(true);
     try {
-      // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Create a new user
       const newUser: User = {
         id: `user-${Date.now()}`,
         name: `${params.firstName} ${params.lastName}`,
@@ -152,10 +140,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         phoneNumber: params.whatsappNumber,
         provider: "email",
         role: "user",
-        photoURL: "", // Changed from avatar to photoURL to match User interface
-        country: params.country,
-        state: params.state,
-        city: params.city,
+        photoURL: "",
+        location: {
+          country: params.country,
+          city: params.city
+        },
         created_at: new Date().toISOString(),
       };
       
@@ -179,7 +168,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logout = async (): Promise<void> => {
     try {
-      // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 500));
       setCurrentUser(null);
       toast({
