@@ -16,10 +16,17 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Menu } from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useState } from "react";
 
 const Header = () => {
   const { currentUser, logout, isAdmin } = useAuth();
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+
+  const handleLinkClick = () => {
+    setIsSheetOpen(false);
+  };
 
   return (
     <header className="bg-white shadow-md sticky top-0 z-10">
@@ -29,57 +36,131 @@ const Header = () => {
             Darood Counter
           </Link>
 
-          <NavigationMenu>
-            <NavigationMenuList>
-              <NavigationMenuItem>
-                <Link to="/" className={navigationMenuTriggerStyle()}>
-                  Home
-                </Link>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link to="/about" className={navigationMenuTriggerStyle()}>
-                  About
-                </Link>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link to="/library" className={navigationMenuTriggerStyle()}>
-                  Library
-                </Link>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link to="/media" className={navigationMenuTriggerStyle()}>
-                  Media
-                </Link>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link to="/contact" className={navigationMenuTriggerStyle()}>
-                  Contact
-                </Link>
-              </NavigationMenuItem>
-              {isAdmin && (
+          {/* Desktop Navigation */}
+          <div className="hidden md:block">
+            <NavigationMenu>
+              <NavigationMenuList>
                 <NavigationMenuItem>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button className={cn(navigationMenuTriggerStyle(), "bg-amber-100 hover:bg-amber-200 text-amber-800 flex items-center")}>
-                        Admin
-                        <ChevronDown className="ml-1 h-4 w-4" />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="bg-white">
-                      <DropdownMenuItem asChild>
-                        <Link to="/admin" className="cursor-pointer">Dashboard</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/admin/reports" className="cursor-pointer">Reports</Link>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <Link to="/" className={navigationMenuTriggerStyle()}>
+                    Home
+                  </Link>
                 </NavigationMenuItem>
-              )}
-            </NavigationMenuList>
-          </NavigationMenu>
+                <NavigationMenuItem>
+                  <Link to="/about" className={navigationMenuTriggerStyle()}>
+                    About
+                  </Link>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <Link to="/library" className={navigationMenuTriggerStyle()}>
+                    Library
+                  </Link>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <Link to="/media" className={navigationMenuTriggerStyle()}>
+                    Media
+                  </Link>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <Link to="/contact" className={navigationMenuTriggerStyle()}>
+                    Contact
+                  </Link>
+                </NavigationMenuItem>
+                {isAdmin && (
+                  <NavigationMenuItem>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button className={cn(navigationMenuTriggerStyle(), "bg-amber-100 hover:bg-amber-200 text-amber-800 flex items-center")}>
+                          Admin
+                          <ChevronDown className="ml-1 h-4 w-4" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="bg-white">
+                        <DropdownMenuItem asChild>
+                          <Link to="/admin" className="cursor-pointer">Dashboard</Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <Link to="/admin/reports" className="cursor-pointer">Reports</Link>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </NavigationMenuItem>
+                )}
+              </NavigationMenuList>
+            </NavigationMenu>
+          </div>
 
-          <div className="flex items-center space-x-4">
+          {/* Mobile Navigation */}
+          <div className="md:hidden">
+            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-6 w-6 text-emerald-800" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[75vw] sm:w-[350px] py-6">
+                <nav className="flex flex-col gap-4">
+                  <Link to="/" className="text-lg font-medium hover:text-emerald-700" onClick={handleLinkClick}>
+                    Home
+                  </Link>
+                  <Link to="/about" className="text-lg font-medium hover:text-emerald-700" onClick={handleLinkClick}>
+                    About
+                  </Link>
+                  <Link to="/library" className="text-lg font-medium hover:text-emerald-700" onClick={handleLinkClick}>
+                    Library
+                  </Link>
+                  <Link to="/media" className="text-lg font-medium hover:text-emerald-700" onClick={handleLinkClick}>
+                    Media
+                  </Link>
+                  <Link to="/contact" className="text-lg font-medium hover:text-emerald-700" onClick={handleLinkClick}>
+                    Contact
+                  </Link>
+                  {currentUser && (
+                    <Link to="/dashboard" className="text-lg font-medium hover:text-emerald-700" onClick={handleLinkClick}>
+                      Dashboard
+                    </Link>
+                  )}
+                  {isAdmin && (
+                    <div className="border-t border-gray-200 mt-2 pt-4">
+                      <h3 className="font-semibold text-amber-800 mb-2">Admin</h3>
+                      <div className="flex flex-col gap-2 pl-2">
+                        <Link to="/admin" className="text-lg font-medium hover:text-emerald-700" onClick={handleLinkClick}>
+                          Dashboard
+                        </Link>
+                        <Link to="/admin/reports" className="text-lg font-medium hover:text-emerald-700" onClick={handleLinkClick}>
+                          Reports
+                        </Link>
+                        <Link to="/admin/edit-counters" className="text-lg font-medium hover:text-emerald-700" onClick={handleLinkClick}>
+                          Edit Counters
+                        </Link>
+                      </div>
+                    </div>
+                  )}
+                </nav>
+                {currentUser && (
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      logout();
+                      setIsSheetOpen(false);
+                    }}
+                    className="mt-6 w-full text-emerald-700 border-emerald-200"
+                  >
+                    Logout
+                  </Button>
+                )}
+                {!currentUser && (
+                  <Link to="/login" onClick={handleLinkClick} className="block mt-6">
+                    <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">
+                      Login
+                    </Button>
+                  </Link>
+                )}
+              </SheetContent>
+            </Sheet>
+          </div>
+
+          {/* Desktop Login/Logout Buttons */}
+          <div className="hidden md:flex items-center space-x-4">
             {currentUser ? (
               <>
                 <Link to="/dashboard">
