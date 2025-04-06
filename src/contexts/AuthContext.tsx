@@ -145,7 +145,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           country: params.country,
           city: params.city
         },
-        created_at: new Date().toISOString(),
       };
       
       setCurrentUser(newUser);
