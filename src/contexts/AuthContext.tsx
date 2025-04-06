@@ -1,3 +1,4 @@
+
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { User } from "@/types";
 import { mockUsers } from "@/lib/mock-data";
@@ -151,7 +152,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         phoneNumber: params.whatsappNumber,
         provider: "email",
         role: "user",
-        avatar: "",
+        photoURL: "", // Changed from avatar to photoURL to match User interface
         country: params.country,
         state: params.state,
         city: params.city,
