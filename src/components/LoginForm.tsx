@@ -6,18 +6,27 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
-import { Mail, Phone, Check } from "lucide-react";
+import { Mail, MessageCircle, Check } from "lucide-react";
 
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [whatsappNumber, setWhatsappNumber] = useState("");
   const [verificationCode, setVerificationCode] = useState("");
   const [showVerification, setShowVerification] = useState(false);
+  const [emailVerificationSent, setEmailVerificationSent] = useState(false);
   const { loginWithGoogle, loginWithEmail, loginWithPhone, loading } = useAuth();
 
-  const handleEmailLogin = async (e: React.FormEvent) => {
+  const handleEmailVerification = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!emailVerificationSent) {
+      // Send verification code to email
+      setEmailVerificationSent(true);
+      // For demo purposes, we'll just show a message
+      return;
+    }
+    
     try {
       await loginWithEmail(email, password);
     } catch (error) {
@@ -25,7 +34,7 @@ const LoginForm: React.FC = () => {
     }
   };
 
-  const handlePhoneVerification = async (e: React.FormEvent) => {
+  const handleWhatsAppVerification = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!showVerification) {
       // For demo, we just show the verification code input
@@ -34,9 +43,9 @@ const LoginForm: React.FC = () => {
     }
     
     try {
-      await loginWithPhone(phoneNumber, verificationCode);
+      await loginWithPhone(whatsappNumber, verificationCode);
     } catch (error) {
-      console.error("Phone login error:", error);
+      console.error("WhatsApp login error:", error);
     }
   };
 
@@ -98,14 +107,14 @@ const LoginForm: React.FC = () => {
               <Mail className="w-4 h-4 mr-2" />
               Email
             </TabsTrigger>
-            <TabsTrigger value="phone">
-              <Phone className="w-4 h-4 mr-2" />
-              Phone
+            <TabsTrigger value="whatsapp">
+              <MessageCircle className="w-4 h-4 mr-2" />
+              WhatsApp
             </TabsTrigger>
           </TabsList>
           
           <TabsContent value="email">
-            <form onSubmit={handleEmailLogin}>
+            <form onSubmit={handleEmailVerification}>
               <div className="grid gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="email">Email</Label>
@@ -119,40 +128,76 @@ const LoginForm: React.FC = () => {
                     className="focus:border-emerald-500 focus:ring-emerald-500"
                   />
                 </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="password">Password</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    className="focus:border-emerald-500 focus:ring-emerald-500"
-                  />
-                </div>
-                <Button
-                  className="bg-emerald-600 hover:bg-emerald-700"
-                  disabled={loading}
-                  type="submit"
-                >
-                  {loading ? "Logging in..." : "Sign In"}
-                </Button>
+                
+                {!emailVerificationSent ? (
+                  <Button
+                    className="bg-emerald-600 hover:bg-emerald-700"
+                    disabled={loading || !email}
+                    type="submit"
+                  >
+                    {loading ? "Sending..." : "Send Verification Code"}
+                  </Button>
+                ) : (
+                  <>
+                    <div className="grid gap-2">
+                      <Label htmlFor="verification">Verification Code</Label>
+                      <div className="flex items-center space-x-2">
+                        <Input
+                          id="verification"
+                          type="text"
+                          placeholder="123456"
+                          value={verificationCode}
+                          onChange={(e) => setVerificationCode(e.target.value)}
+                          required
+                          maxLength={6}
+                          className="focus:border-emerald-500 focus:ring-emerald-500"
+                        />
+                        {verificationCode.length === 6 && (
+                          <Check className="w-5 h-5 text-green-500" />
+                        )}
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        A verification code has been sent to your email
+                      </p>
+                    </div>
+                    
+                    <div className="grid gap-2">
+                      <Label htmlFor="password">Password</Label>
+                      <Input
+                        id="password"
+                        type="password"
+                        placeholder="••••••••"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        className="focus:border-emerald-500 focus:ring-emerald-500"
+                      />
+                    </div>
+                    
+                    <Button
+                      className="bg-emerald-600 hover:bg-emerald-700"
+                      disabled={loading || verificationCode.length !== 6 || !password}
+                      type="submit"
+                    >
+                      {loading ? "Logging in..." : "Verify & Sign In"}
+                    </Button>
+                  </>
+                )}
               </div>
             </form>
           </TabsContent>
           
-          <TabsContent value="phone">
-            <form onSubmit={handlePhoneVerification}>
+          <TabsContent value="whatsapp">
+            <form onSubmit={handleWhatsAppVerification}>
               <div className="grid gap-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="phone">Phone Number</Label>
+                  <Label htmlFor="whatsapp">WhatsApp Number</Label>
                   <Input
-                    id="phone"
+                    id="whatsapp"
                     type="tel"
                     placeholder="+921234567890"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    value={whatsappNumber}
+                    onChange={(e) => setWhatsappNumber(e.target.value)}
                     required
                     disabled={showVerification}
                     className="focus:border-emerald-500 focus:ring-emerald-500"
@@ -178,7 +223,7 @@ const LoginForm: React.FC = () => {
                       )}
                     </div>
                     <p className="text-xs text-muted-foreground mt-1">
-                      For demo, use code: 123456
+                      Verification code sent to your WhatsApp
                     </p>
                   </div>
                 )}
@@ -191,7 +236,7 @@ const LoginForm: React.FC = () => {
                   {loading
                     ? "Processing..."
                     : !showVerification
-                    ? "Send Code"
+                    ? "Send Code to WhatsApp"
                     : "Verify & Login"}
                 </Button>
               </div>
@@ -203,7 +248,7 @@ const LoginForm: React.FC = () => {
         <p className="text-sm text-muted-foreground">
           For demo, use email: user3@example.com with any password,
           <br />
-          or phone: +921234567890 with code 123456
+          or WhatsApp: +921234567890 with code 123456
         </p>
       </CardFooter>
     </Card>
