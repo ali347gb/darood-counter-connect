@@ -76,15 +76,8 @@ const SignupForm: React.FC = () => {
     setVerificationSent(true);
     
     toast({
-      title: "Verification Code Sent",
-      description: watchVerificationMethod === "email" 
-        ? `A verification code has been sent to ${watchEmail}` 
-        : `A verification code has been sent to your WhatsApp (${watchWhatsappNumber})`,
-    });
-    
-    toast({
-      title: "Demo Note",
-      description: "For this demo, please use '123456' as the verification code",
+      title: "Demo Mode - Verification Code",
+      description: "In a real application, a verification code would be sent. For this demo, please use '123456'",
     });
   };
 
@@ -92,7 +85,7 @@ const SignupForm: React.FC = () => {
     if (data.verificationCode !== "123456") {
       toast({
         title: "Error",
-        description: "Invalid verification code",
+        description: "Invalid verification code. For this demo, please use '123456'",
         variant: "destructive"
       });
       return;

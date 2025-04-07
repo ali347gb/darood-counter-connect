@@ -10,7 +10,7 @@ export const signupSchema = z.object({
   state: z.string().min(1, "State/Province is required"),
   city: z.string().min(1, "City is required"),
   verificationMethod: z.enum(["email", "whatsapp"]),
-  verificationCode: z.string().length(6, "Verification code must be 6 digits"),
+  verificationCode: z.string().min(1, "Verification code is required").max(6, "Verification code must be 6 digits"),
   password: z.string().min(8, "Password must be at least 8 characters"),
   confirmPassword: z.string().min(1, "Please confirm your password"),
 }).refine((data) => data.password === data.confirmPassword, {

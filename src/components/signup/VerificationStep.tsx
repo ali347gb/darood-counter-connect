@@ -1,6 +1,6 @@
 
 import { useFormContext } from "react-hook-form";
-import { Check } from "lucide-react";
+import { Check, MessageCircle, Mail } from "lucide-react";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -13,12 +13,17 @@ interface VerificationStepProps {
 }
 
 const VerificationStep = ({ onSubmit, loading }: VerificationStepProps) => {
-  const { control, watch } = useFormContext<SignupFormValues>();
+  const { control, watch, setValue } = useFormContext<SignupFormValues>();
   
   const verificationMethod = watch("verificationMethod");
   const verificationCode = watch("verificationCode");
   const email = watch("email");
   const whatsappNumber = watch("whatsappNumber");
+  
+  // Helper function to handle demo verification code
+  const handleDemoCode = () => {
+    setValue("verificationCode", "123456");
+  };
 
   return (
     <div className="grid gap-4">
@@ -37,9 +42,19 @@ const VerificationStep = ({ onSubmit, loading }: VerificationStepProps) => {
                   <SelectValue placeholder="Select verification method" />
                 </SelectTrigger>
               </FormControl>
-              <SelectContent>
-                <SelectItem value="email">Email</SelectItem>
-                <SelectItem value="whatsapp">WhatsApp</SelectItem>
+              <SelectContent className="bg-white">
+                <SelectItem value="email">
+                  <div className="flex items-center">
+                    <Mail className="w-4 h-4 mr-2" />
+                    Email
+                  </div>
+                </SelectItem>
+                <SelectItem value="whatsapp">
+                  <div className="flex items-center">
+                    <MessageCircle className="w-4 h-4 mr-2" />
+                    WhatsApp
+                  </div>
+                </SelectItem>
               </SelectContent>
             </Select>
             <FormMessage />
@@ -69,11 +84,19 @@ const VerificationStep = ({ onSubmit, loading }: VerificationStepProps) => {
                 )}
               </div>
               <p className="text-xs text-muted-foreground mt-1">
-                A verification code has been sent to your {verificationMethod === "email" ? "email" : "WhatsApp"}
+                A verification code would be sent to your {verificationMethod === "email" ? "email" : "WhatsApp"} in a real application
               </p>
-              <p className="text-xs font-medium text-emerald-600 mt-1">
-                For this demo, use code: 123456
-              </p>
+              <div className="mt-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleDemoCode}
+                  className="text-xs"
+                >
+                  Use Demo Code (123456)
+                </Button>
+              </div>
               <FormMessage />
             </FormItem>
           )}
@@ -90,9 +113,13 @@ const VerificationStep = ({ onSubmit, loading }: VerificationStepProps) => {
       )}
       
       {!verificationCode && (
-        <p className="text-sm text-muted-foreground text-center">
-          For this demo, use verification code: <strong>123456</strong>
-        </p>
+        <div className="bg-amber-50 border border-amber-200 rounded-md p-3 text-sm">
+          <p className="font-medium text-amber-800">Demo Note:</p>
+          <p className="text-amber-700">
+            Since this is a demo application, no actual verification codes will be sent.
+            After clicking "Send Verification Code", you'll be able to use code: <strong>123456</strong>
+          </p>
+        </div>
       )}
     </div>
   );

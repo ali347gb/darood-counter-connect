@@ -54,7 +54,7 @@ const LocationSelector = () => {
                   <SelectValue placeholder="Select country" />
                 </SelectTrigger>
               </FormControl>
-              <SelectContent className="max-h-[300px]">
+              <SelectContent className="max-h-[300px] bg-white">
                 {countries.map((country) => (
                   <SelectItem key={country.code} value={country.code}>
                     {country.name}
@@ -89,12 +89,14 @@ const LocationSelector = () => {
                     <SelectValue placeholder="Select state/province" />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent>
-                  {states[selectedCountry as keyof typeof states]?.map((state) => (
-                    <SelectItem key={state.code} value={state.code}>
-                      {state.name}
-                    </SelectItem>
-                  )) || (
+                <SelectContent className="max-h-[300px] bg-white">
+                  {states[selectedCountry] ? (
+                    states[selectedCountry].map((state) => (
+                      <SelectItem key={state.code} value={state.code}>
+                        {state.name}
+                      </SelectItem>
+                    ))
+                  ) : (
                     <SelectItem value="other">Other</SelectItem>
                   )}
                 </SelectContent>
@@ -124,12 +126,14 @@ const LocationSelector = () => {
                     <SelectValue placeholder="Select city" />
                   </SelectTrigger>
                 </FormControl>
-                <SelectContent>
-                  {cities[selectedState as keyof typeof cities]?.map((city) => (
-                    <SelectItem key={city} value={city}>
-                      {city}
-                    </SelectItem>
-                  )) || (
+                <SelectContent className="max-h-[300px] bg-white">
+                  {cities[selectedState] ? (
+                    cities[selectedState].map((city) => (
+                      <SelectItem key={city} value={city}>
+                        {city}
+                      </SelectItem>
+                    ))
+                  ) : (
                     <SelectItem value="other">Other</SelectItem>
                   )}
                 </SelectContent>
