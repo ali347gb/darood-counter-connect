@@ -1,29 +1,20 @@
+
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { User } from "@/types";
-import { mockUsers } from "@/lib/mock-data";
+import { AuthContextType, RegisterParams } from "@/types/auth";
 import { useToast } from "@/hooks/use-toast";
-
-interface RegisterParams {
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  whatsappNumber: string;
-  country: string;
-  state: string;
-  city: string;
-}
-
-interface AuthContextType {
-  currentUser: User | null;
-  loading: boolean;
-  isAdmin: boolean;
-  loginWithGoogle: () => Promise<void>;
-  loginWithEmail: (email: string, password: string) => Promise<void>;
-  loginWithPhone: (phoneNumber: string, verificationCode: string) => Promise<void>;
-  registerWithEmail: (params: RegisterParams) => Promise<void>;
-  logout: () => Promise<void>;
-}
+import { 
+  loginWithGoogleUtil, 
+  loginWithEmailUtil, 
+  loginWithPhoneUtil, 
+  registerWithEmailUtil,
+  logoutUtil
+} from "@/lib/auth-utils";
+import {
+  saveUserToStorage,
+  getUserFromStorage,
+  removeUserFromStorage
+} from "@/lib/storage-utils";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -35,26 +26,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const isAdmin = currentUser?.role === "admin";
 
   useEffect(() => {
-    const savedUser = localStorage.getItem("darood-app-user");
+    const savedUser = getUserFromStorage();
     if (savedUser) {
-      setCurrentUser(JSON.parse(savedUser));
+      setCurrentUser(savedUser);
     }
     setLoading(false);
   }, []);
 
   useEffect(() => {
     if (currentUser) {
-      localStorage.setItem("darood-app-user", JSON.stringify(currentUser));
+      saveUserToStorage(currentUser);
     } else {
-      localStorage.removeItem("darood-app-user");
+      removeUserFromStorage();
     }
   }, [currentUser]);
 
   const loginWithGoogle = async (): Promise<void> => {
     setLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setCurrentUser(mockUsers.find(user => user.provider === "google") || mockUsers[0]);
+      const user = await loginWithGoogleUtil();
+      setCurrentUser(user);
       toast({
         title: "Login Successful",
         description: "Welcome back!",
@@ -74,13 +65,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const loginWithEmail = async (email: string, password: string): Promise<void> => {
     setLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      const user = mockUsers.find(u => u.email === email && u.provider === "email");
-      
-      if (!user) {
-        throw new Error("Invalid credentials");
-      }
-      
+      const user = await loginWithEmailUtil(email, password);
       setCurrentUser(user);
       
       toast({
@@ -106,11 +91,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const loginWithPhone = async (phoneNumber: string, verificationCode: string): Promise<void> => {
     setLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      const user = mockUsers.find(u => u.phoneNumber === phoneNumber && u.provider === "phone");
-      if (!user || verificationCode !== "123456") {
-        throw new Error("Invalid credentials");
-      }
+      const user = await loginWithPhoneUtil(phoneNumber, verificationCode);
       setCurrentUser(user);
       toast({
         title: "Login Successful",
@@ -131,22 +112,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const registerWithEmail = async (params: RegisterParams): Promise<void> => {
     setLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      const newUser: User = {
-        id: `user-${Date.now()}`,
-        name: `${params.firstName} ${params.lastName}`,
-        email: params.email,
-        phoneNumber: params.whatsappNumber,
-        provider: "email",
-        role: "user",
-        photoURL: "",
-        location: {
-          country: params.country,
-          city: params.city
-        },
-      };
-      
+      const newUser = await registerWithEmailUtil(params);
       setCurrentUser(newUser);
       
       toast({
@@ -167,7 +133,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const logout = async (): Promise<void> => {
     try {
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await logoutUtil();
       setCurrentUser(null);
       toast({
         title: "Logged Out",
