@@ -3,6 +3,8 @@ import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm, FormProvider } from "react-hook-form";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 import PersonalInfoStep from "./signup/PersonalInfoStep";
@@ -10,61 +12,84 @@ import LocationSelector from "./signup/LocationSelector";
 import VerificationStep from "./signup/VerificationStep";
 import PasswordStep from "./signup/PasswordStep";
 import GoogleSignupButton from "./signup/GoogleSignupButton";
+import { signupSchema, type SignupFormValues } from "@/schemas/signup-schema";
 
 const SignupForm: React.FC = () => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [whatsappNumber, setWhatsappNumber] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [country, setCountry] = useState("");
-  const [state, setState] = useState("");
-  const [city, setCity] = useState("");
-  const [verificationCode, setVerificationCode] = useState("");
-  const [verificationMethod, setVerificationMethod] = useState<"email" | "whatsapp">("email");
   const [verificationSent, setVerificationSent] = useState(false);
   
   const { registerWithEmail, loginWithGoogle, loading } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const handleSendVerification = (e: React.FormEvent) => {
-    e.preventDefault();
+  const methods = useForm<SignupFormValues>({
+    resolver: zodResolver(signupSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      whatsappNumber: "",
+      country: "",
+      state: "",
+      city: "",
+      verificationMethod: "email",
+      verificationCode: "",
+      password: "",
+      confirmPassword: "",
+    },
+    mode: "onChange",
+  });
+
+  const { handleSubmit, watch, setValue, trigger, formState: { isValid } } = methods;
+
+  const watchEmail = watch("email");
+  const watchWhatsappNumber = watch("whatsappNumber");
+  const watchVerificationMethod = watch("verificationMethod");
+  const watchVerificationCode = watch("verificationCode");
+  const watchPassword = watch("password");
+  const watchConfirmPassword = watch("confirmPassword");
+
+  const handleSendVerification = async () => {
+    const isValid = await trigger(["email", "whatsappNumber", "firstName", "lastName", "country", "state", "city"]);
+    
+    if (!isValid) {
+      return;
+    }
+
+    if (watchVerificationMethod === "email" && !watchEmail) {
+      toast({
+        title: "Error",
+        description: "Please enter an email address",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    if (watchVerificationMethod === "whatsapp" && !watchWhatsappNumber) {
+      toast({
+        title: "Error",
+        description: "Please enter a WhatsApp number",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setVerificationSent(true);
+    
+    toast({
+      title: "Verification Code Sent",
+      description: watchVerificationMethod === "email" 
+        ? `A verification code has been sent to ${watchEmail}` 
+        : `A verification code has been sent to your WhatsApp (${watchWhatsappNumber})`,
+    });
+    
+    toast({
+      title: "Demo Note",
+      description: "For this demo, please use '123456' as the verification code",
+    });
   };
 
-  const handleSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (password !== confirmPassword) {
-      toast({
-        title: "Error",
-        description: "Passwords do not match",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    if (!firstName || !lastName) {
-      toast({
-        title: "Error",
-        description: "Please enter your name",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    if (!country || !state || !city) {
-      toast({
-        title: "Error",
-        description: "Please select your location",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    if (verificationCode !== "123456") {
+  const onSubmit = async (data: SignupFormValues) => {
+    if (data.verificationCode !== "123456") {
       toast({
         title: "Error",
         description: "Invalid verification code",
@@ -75,14 +100,14 @@ const SignupForm: React.FC = () => {
 
     try {
       await registerWithEmail({
-        email,
-        password,
-        firstName,
-        lastName,
-        whatsappNumber,
-        country,
-        state,
-        city
+        email: data.email,
+        password: data.password,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        whatsappNumber: data.whatsappNumber,
+        country: data.country,
+        state: data.state,
+        city: data.city
       });
       
       toast({
@@ -122,65 +147,30 @@ const SignupForm: React.FC = () => {
           </div>
         </div>
 
-        {!verificationSent ? (
-          <div className="space-y-6">
-            <PersonalInfoStep 
-              firstName={firstName}
-              lastName={lastName}
-              email={email}
-              whatsappNumber={whatsappNumber}
-              onFirstNameChange={setFirstName}
-              onLastNameChange={setLastName}
-              onEmailChange={setEmail}
-              onWhatsappNumberChange={setWhatsappNumber}
-            />
-            
-            <LocationSelector 
-              selectedCountry={country}
-              selectedState={state}
-              selectedCity={city}
-              onCountryChange={setCountry}
-              onStateChange={setState}
-              onCityChange={setCity}
-            />
-            
-            <VerificationStep 
-              email={email}
-              whatsappNumber={whatsappNumber}
-              verificationMethod={verificationMethod}
-              verificationCode={verificationCode}
-              onVerificationMethodChange={setVerificationMethod}
-              onVerificationCodeChange={setVerificationCode}
-              onSubmit={handleSendVerification}
-              loading={loading}
-            />
-          </div>
-        ) : (
-          <div className="space-y-6">
-            <div className="grid gap-2">
+        <FormProvider {...methods}>
+          {!verificationSent ? (
+            <div className="space-y-6">
+              <PersonalInfoStep />
+              <LocationSelector />
               <VerificationStep 
-                email={email}
-                whatsappNumber={whatsappNumber}
-                verificationMethod={verificationMethod}
-                verificationCode={verificationCode}
-                onVerificationMethodChange={setVerificationMethod}
-                onVerificationCodeChange={setVerificationCode}
-                onSubmit={() => {}}
+                onSubmit={handleSendVerification}
                 loading={loading}
               />
             </div>
-            
-            <PasswordStep 
-              password={password}
-              confirmPassword={confirmPassword}
-              onPasswordChange={setPassword}
-              onConfirmPasswordChange={setConfirmPassword}
-              onSubmit={handleSignup}
-              isValid={verificationCode.length === 6 && !!password && password === confirmPassword}
-              loading={loading}
-            />
-          </div>
-        )}
+          ) : (
+            <div className="space-y-6">
+              <VerificationStep 
+                onSubmit={() => {}}
+                loading={loading}
+              />
+              <PasswordStep 
+                onSubmit={handleSubmit(onSubmit)}
+                isValid={isValid && watchVerificationCode.length === 6 && !!watchPassword && watchPassword === watchConfirmPassword}
+                loading={loading}
+              />
+            </div>
+          )}
+        </FormProvider>
       </CardContent>
       <CardFooter className="flex justify-center">
         <p className="text-sm text-muted-foreground">

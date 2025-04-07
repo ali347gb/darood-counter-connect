@@ -1,106 +1,143 @@
 
-import { useState, useEffect } from "react";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useFormContext } from "react-hook-form";
 import { Flag, MapPin } from "lucide-react";
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { countries, states, cities } from "@/utils/locationData";
+import { SignupFormValues } from "@/schemas/signup-schema";
+import { useEffect } from "react";
 
-interface LocationSelectorProps {
-  selectedCountry: string;
-  selectedState: string;
-  selectedCity: string;
-  onCountryChange: (value: string) => void;
-  onStateChange: (value: string) => void;
-  onCityChange: (value: string) => void;
-}
-
-const LocationSelector = ({
-  selectedCountry,
-  selectedState,
-  selectedCity,
-  onCountryChange,
-  onStateChange,
-  onCityChange
-}: LocationSelectorProps) => {
+const LocationSelector = () => {
+  const { control, watch, setValue, trigger } = useFormContext<SignupFormValues>();
+  
+  const selectedCountry = watch("country");
+  const selectedState = watch("state");
+  
   // Reset state when country changes
   useEffect(() => {
-    if (selectedState) {
-      onStateChange("");
+    if (selectedCountry && selectedState) {
+      setValue("state", "");
+      setValue("city", "");
+      trigger(["state", "city"]);
     }
-  }, [selectedCountry, onStateChange, selectedState]);
+  }, [selectedCountry, setValue, selectedState, trigger]);
 
   // Reset city when state changes
   useEffect(() => {
-    if (selectedCity) {
-      onCityChange("");
+    if (selectedState && watch("city")) {
+      setValue("city", "");
+      trigger("city");
     }
-  }, [selectedState, onCityChange, selectedCity]);
+  }, [selectedState, setValue, watch, trigger]);
 
   return (
     <div className="space-y-4">
-      <div className="grid gap-2">
-        <Label htmlFor="country">
-          <Flag className="w-4 h-4 inline mr-1" />
-          Country
-        </Label>
-        <Select value={selectedCountry} onValueChange={onCountryChange}>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select country" />
-          </SelectTrigger>
-          <SelectContent className="max-h-[300px]">
-            {countries.map((country) => (
-              <SelectItem key={country.code} value={country.code}>
-                {country.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      <FormField
+        control={control}
+        name="country"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>
+              <Flag className="w-4 h-4 inline mr-1" />
+              Country
+            </FormLabel>
+            <Select
+              onValueChange={(value) => {
+                field.onChange(value);
+                setValue("state", "");
+                setValue("city", "");
+              }}
+              value={field.value}
+            >
+              <FormControl>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select country" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent className="max-h-[300px]">
+                {countries.map((country) => (
+                  <SelectItem key={country.code} value={country.code}>
+                    {country.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
       {selectedCountry && (
-        <div className="grid gap-2">
-          <Label htmlFor="state">
-            <MapPin className="w-4 h-4 inline mr-1" />
-            State/Province
-          </Label>
-          <Select value={selectedState} onValueChange={onStateChange}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select state/province" />
-            </SelectTrigger>
-            <SelectContent>
-              {states[selectedCountry as keyof typeof states]?.map((state) => (
-                <SelectItem key={state.code} value={state.code}>
-                  {state.name}
-                </SelectItem>
-              )) || (
-                <SelectItem value="other">Other</SelectItem>
-              )}
-            </SelectContent>
-          </Select>
-        </div>
+        <FormField
+          control={control}
+          name="state"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                <MapPin className="w-4 h-4 inline mr-1" />
+                State/Province
+              </FormLabel>
+              <Select
+                onValueChange={(value) => {
+                  field.onChange(value);
+                  setValue("city", "");
+                }}
+                value={field.value}
+              >
+                <FormControl>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select state/province" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {states[selectedCountry as keyof typeof states]?.map((state) => (
+                    <SelectItem key={state.code} value={state.code}>
+                      {state.name}
+                    </SelectItem>
+                  )) || (
+                    <SelectItem value="other">Other</SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
       )}
 
       {selectedState && (
-        <div className="grid gap-2">
-          <Label htmlFor="city">
-            <MapPin className="w-4 h-4 inline mr-1" />
-            City
-          </Label>
-          <Select value={selectedCity} onValueChange={onCityChange}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select city" />
-            </SelectTrigger>
-            <SelectContent>
-              {cities[selectedState as keyof typeof cities]?.map((city) => (
-                <SelectItem key={city} value={city}>
-                  {city}
-                </SelectItem>
-              )) || (
-                <SelectItem value="other">Other</SelectItem>
-              )}
-            </SelectContent>
-          </Select>
-        </div>
+        <FormField
+          control={control}
+          name="city"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                <MapPin className="w-4 h-4 inline mr-1" />
+                City
+              </FormLabel>
+              <Select
+                onValueChange={field.onChange}
+                value={field.value}
+              >
+                <FormControl>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select city" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {cities[selectedState as keyof typeof cities]?.map((city) => (
+                    <SelectItem key={city} value={city}>
+                      {city}
+                    </SelectItem>
+                  )) || (
+                    <SelectItem value="other">Other</SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
       )}
     </div>
   );
