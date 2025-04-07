@@ -13,30 +13,33 @@ import Media from "./pages/Media";
 import Library from "./pages/Library";
 import NotFound from "./pages/NotFound";
 import { AuthProvider } from "./contexts/AuthContext";
+import { CounterProvider } from "./contexts/CounterContext";
 import { Toaster } from "@/components/ui/toaster";
 import "./App.css";
 
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/admin/reports" element={<AdminReports />} />
-          <Route path="/admin/edit-counters" element={<AdminEditCounters />} />
-          <Route path="/media" element={<Media />} />
-          <Route path="/library" element={<Library />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Router>
-      <Toaster />
+      <CounterProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/admin/reports" element={<AdminReports />} />
+            <Route path="/admin/edit-counters" element={<AdminEditCounters />} />
+            <Route path="/media" element={<Media />} />
+            <Route path="/library" element={<Library />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Router>
+        <Toaster />
+      </CounterProvider>
     </AuthProvider>
   );
 }
