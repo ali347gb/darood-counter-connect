@@ -176,7 +176,7 @@ const LoginForm: React.FC = () => {
                       className="focus:border-emerald-500 focus:ring-emerald-500"
                     />
                     <p className="text-xs text-muted-foreground mt-1">
-                      Verification code sent to your WhatsApp
+                      For this demo, use verification code: <strong>123456</strong>
                     </p>
                   </div>
                 )}

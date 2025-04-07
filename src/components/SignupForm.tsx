@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,47 +27,205 @@ const SignupForm: React.FC = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  // Mock country data - in a real app, this would come from an API
   const countries = [
-    { code: "PK", name: "Pakistan" },
-    { code: "US", name: "United States" },
-    { code: "GB", name: "United Kingdom" },
-    { code: "CA", name: "Canada" },
+    { code: "AF", name: "Afghanistan" },
+    { code: "AL", name: "Albania" },
+    { code: "DZ", name: "Algeria" },
+    { code: "AD", name: "Andorra" },
+    { code: "AO", name: "Angola" },
+    { code: "AG", name: "Antigua and Barbuda" },
+    { code: "AR", name: "Argentina" },
+    { code: "AM", name: "Armenia" },
     { code: "AU", name: "Australia" },
+    { code: "AT", name: "Austria" },
+    { code: "AZ", name: "Azerbaijan" },
+    { code: "BS", name: "Bahamas" },
+    { code: "BH", name: "Bahrain" },
+    { code: "BD", name: "Bangladesh" },
+    { code: "BB", name: "Barbados" },
+    { code: "BY", name: "Belarus" },
+    { code: "BE", name: "Belgium" },
+    { code: "BZ", name: "Belize" },
+    { code: "BJ", name: "Benin" },
+    { code: "BT", name: "Bhutan" },
+    { code: "BO", name: "Bolivia" },
+    { code: "BA", name: "Bosnia and Herzegovina" },
+    { code: "BW", name: "Botswana" },
+    { code: "BR", name: "Brazil" },
+    { code: "BN", name: "Brunei" },
+    { code: "BG", name: "Bulgaria" },
+    { code: "BF", name: "Burkina Faso" },
+    { code: "BI", name: "Burundi" },
+    { code: "CV", name: "Cabo Verde" },
+    { code: "KH", name: "Cambodia" },
+    { code: "CM", name: "Cameroon" },
+    { code: "CA", name: "Canada" },
+    { code: "CF", name: "Central African Republic" },
+    { code: "TD", name: "Chad" },
+    { code: "CL", name: "Chile" },
+    { code: "CN", name: "China" },
+    { code: "CO", name: "Colombia" },
+    { code: "KM", name: "Comoros" },
+    { code: "CG", name: "Congo" },
+    { code: "CR", name: "Costa Rica" },
+    { code: "HR", name: "Croatia" },
+    { code: "CU", name: "Cuba" },
+    { code: "CY", name: "Cyprus" },
+    { code: "CZ", name: "Czech Republic" },
+    { code: "DK", name: "Denmark" },
+    { code: "DJ", name: "Djibouti" },
+    { code: "DM", name: "Dominica" },
+    { code: "DO", name: "Dominican Republic" },
+    { code: "EC", name: "Ecuador" },
+    { code: "EG", name: "Egypt" },
+    { code: "SV", name: "El Salvador" },
+    { code: "GQ", name: "Equatorial Guinea" },
+    { code: "ER", name: "Eritrea" },
+    { code: "EE", name: "Estonia" },
+    { code: "SZ", name: "Eswatini" },
+    { code: "ET", name: "Ethiopia" },
+    { code: "FJ", name: "Fiji" },
+    { code: "FI", name: "Finland" },
+    { code: "FR", name: "France" },
+    { code: "GA", name: "Gabon" },
+    { code: "GM", name: "Gambia" },
+    { code: "GE", name: "Georgia" },
+    { code: "DE", name: "Germany" },
+    { code: "GH", name: "Ghana" },
+    { code: "GR", name: "Greece" },
+    { code: "GD", name: "Grenada" },
+    { code: "GT", name: "Guatemala" },
+    { code: "GN", name: "Guinea" },
+    { code: "GW", name: "Guinea-Bissau" },
+    { code: "GY", name: "Guyana" },
+    { code: "HT", name: "Haiti" },
+    { code: "HN", name: "Honduras" },
+    { code: "HU", name: "Hungary" },
+    { code: "IS", name: "Iceland" },
+    { code: "IN", name: "India" },
+    { code: "ID", name: "Indonesia" },
+    { code: "IR", name: "Iran" },
+    { code: "IQ", name: "Iraq" },
+    { code: "IE", name: "Ireland" },
+    { code: "IL", name: "Israel" },
+    { code: "IT", name: "Italy" },
+    { code: "JM", name: "Jamaica" },
+    { code: "JP", name: "Japan" },
+    { code: "JO", name: "Jordan" },
+    { code: "KZ", name: "Kazakhstan" },
+    { code: "KE", name: "Kenya" },
+    { code: "KI", name: "Kiribati" },
+    { code: "KP", name: "North Korea" },
+    { code: "KR", name: "South Korea" },
+    { code: "KW", name: "Kuwait" },
+    { code: "KG", name: "Kyrgyzstan" },
+    { code: "LA", name: "Laos" },
+    { code: "LV", name: "Latvia" },
+    { code: "LB", name: "Lebanon" },
+    { code: "LS", name: "Lesotho" },
+    { code: "LR", name: "Liberia" },
+    { code: "LY", name: "Libya" },
+    { code: "LI", name: "Liechtenstein" },
+    { code: "LT", name: "Lithuania" },
+    { code: "LU", name: "Luxembourg" },
+    { code: "MG", name: "Madagascar" },
+    { code: "MW", name: "Malawi" },
+    { code: "MY", name: "Malaysia" },
+    { code: "MV", name: "Maldives" },
+    { code: "ML", name: "Mali" },
+    { code: "MT", name: "Malta" },
+    { code: "MH", name: "Marshall Islands" },
+    { code: "MR", name: "Mauritania" },
+    { code: "MU", name: "Mauritius" },
+    { code: "MX", name: "Mexico" },
+    { code: "FM", name: "Micronesia" },
+    { code: "MD", name: "Moldova" },
+    { code: "MC", name: "Monaco" },
+    { code: "MN", name: "Mongolia" },
+    { code: "ME", name: "Montenegro" },
+    { code: "MA", name: "Morocco" },
+    { code: "MZ", name: "Mozambique" },
+    { code: "MM", name: "Myanmar" },
+    { code: "NA", name: "Namibia" },
+    { code: "NR", name: "Nauru" },
+    { code: "NP", name: "Nepal" },
+    { code: "NL", name: "Netherlands" },
+    { code: "NZ", name: "New Zealand" },
+    { code: "NI", name: "Nicaragua" },
+    { code: "NE", name: "Niger" },
+    { code: "NG", name: "Nigeria" },
+    { code: "MK", name: "North Macedonia" },
+    { code: "NO", name: "Norway" },
+    { code: "OM", name: "Oman" },
+    { code: "PK", name: "Pakistan" },
+    { code: "PW", name: "Palau" },
+    { code: "PA", name: "Panama" },
+    { code: "PG", name: "Papua New Guinea" },
+    { code: "PY", name: "Paraguay" },
+    { code: "PE", name: "Peru" },
+    { code: "PH", name: "Philippines" },
+    { code: "PL", name: "Poland" },
+    { code: "PT", name: "Portugal" },
+    { code: "QA", name: "Qatar" },
+    { code: "RO", name: "Romania" },
+    { code: "RU", name: "Russia" },
+    { code: "RW", name: "Rwanda" },
+    { code: "KN", name: "Saint Kitts and Nevis" },
+    { code: "LC", name: "Saint Lucia" },
+    { code: "VC", name: "Saint Vincent and the Grenadines" },
+    { code: "WS", name: "Samoa" },
+    { code: "SM", name: "San Marino" },
+    { code: "ST", name: "Sao Tome and Principe" },
+    { code: "SA", name: "Saudi Arabia" },
+    { code: "SN", name: "Senegal" },
+    { code: "RS", name: "Serbia" },
+    { code: "SC", name: "Seychelles" },
+    { code: "SL", name: "Sierra Leone" },
+    { code: "SG", name: "Singapore" },
+    { code: "SK", name: "Slovakia" },
+    { code: "SI", name: "Slovenia" },
+    { code: "SB", name: "Solomon Islands" },
+    { code: "SO", name: "Somalia" },
+    { code: "ZA", name: "South Africa" },
+    { code: "SS", name: "South Sudan" },
+    { code: "ES", name: "Spain" },
+    { code: "LK", name: "Sri Lanka" },
+    { code: "SD", name: "Sudan" },
+    { code: "SR", name: "Suriname" },
+    { code: "SE", name: "Sweden" },
+    { code: "CH", name: "Switzerland" },
+    { code: "SY", name: "Syria" },
+    { code: "TW", name: "Taiwan" },
+    { code: "TJ", name: "Tajikistan" },
+    { code: "TZ", name: "Tanzania" },
+    { code: "TH", name: "Thailand" },
+    { code: "TL", name: "Timor-Leste" },
+    { code: "TG", name: "Togo" },
+    { code: "TO", name: "Tonga" },
+    { code: "TT", name: "Trinidad and Tobago" },
+    { code: "TN", name: "Tunisia" },
+    { code: "TR", name: "Turkey" },
+    { code: "TM", name: "Turkmenistan" },
+    { code: "TV", name: "Tuvalu" },
+    { code: "UG", name: "Uganda" },
+    { code: "UA", name: "Ukraine" },
+    { code: "AE", name: "United Arab Emirates" },
+    { code: "GB", name: "United Kingdom" },
+    { code: "US", name: "United States" },
+    { code: "UY", name: "Uruguay" },
+    { code: "UZ", name: "Uzbekistan" },
+    { code: "VU", name: "Vanuatu" },
+    { code: "VA", name: "Vatican City" },
+    { code: "VE", name: "Venezuela" },
+    { code: "VN", name: "Vietnam" },
+    { code: "YE", name: "Yemen" },
+    { code: "ZM", name: "Zambia" },
+    { code: "ZW", name: "Zimbabwe" },
   ];
-
-  // Mock states data - in a real app, this would be filtered based on country
-  const states = {
-    PK: [
-      { code: "PB", name: "Punjab" },
-      { code: "SD", name: "Sindh" },
-      { code: "KP", name: "Khyber Pakhtunkhwa" },
-      { code: "BA", name: "Balochistan" },
-    ],
-    US: [
-      { code: "NY", name: "New York" },
-      { code: "CA", name: "California" },
-      { code: "TX", name: "Texas" },
-    ],
-    // Add states for other countries as needed
-  };
-
-  // Mock cities data - in a real app, this would be filtered based on state
-  const cities = {
-    PB: ["Lahore", "Faisalabad", "Rawalpindi", "Multan"],
-    SD: ["Karachi", "Hyderabad", "Sukkur"],
-    KP: ["Peshawar", "Abbottabad", "Swat"],
-    BA: ["Quetta", "Gwadar", "Khuzdar"],
-    NY: ["New York City", "Buffalo", "Rochester"],
-    CA: ["Los Angeles", "San Francisco", "San Diego"],
-    TX: ["Houston", "Austin", "Dallas"],
-    // Add cities for other states as needed
-  };
 
   const handleSendVerification = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validation checks
     if (verificationMethod === "email" && !email) {
       toast({
         title: "Error",
@@ -87,7 +244,6 @@ const SignupForm: React.FC = () => {
       return;
     }
 
-    // In a real app, this would send a verification code
     setVerificationSent(true);
     
     toast({
@@ -96,12 +252,16 @@ const SignupForm: React.FC = () => {
         ? `A verification code has been sent to ${email}` 
         : `A verification code has been sent to your WhatsApp (${whatsappNumber})`,
     });
+    
+    toast({
+      title: "Demo Note",
+      description: "For this demo, please use '123456' as the verification code",
+    });
   };
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validation checks
     if (password !== confirmPassword) {
       toast({
         title: "Error",
@@ -129,8 +289,7 @@ const SignupForm: React.FC = () => {
       return;
     }
 
-    // In a real app, this would verify the code and register the user
-    if (verificationCode !== "123456") { // Mock verification code
+    if (verificationCode !== "123456") {
       toast({
         title: "Error",
         description: "Invalid verification code",
@@ -140,7 +299,6 @@ const SignupForm: React.FC = () => {
     }
 
     try {
-      // In a real app, this would register the user with all information
       await registerWithEmail({
         email,
         password,
@@ -291,7 +449,7 @@ const SignupForm: React.FC = () => {
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select country" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="max-h-[300px]">
                     {countries.map((country) => (
                       <SelectItem key={country.code} value={country.code}>
                         {country.name}
@@ -316,7 +474,9 @@ const SignupForm: React.FC = () => {
                         <SelectItem key={state.code} value={state.code}>
                           {state.name}
                         </SelectItem>
-                      ))}
+                      )) || (
+                        <SelectItem value="other">Other</SelectItem>
+                      )}
                     </SelectContent>
                   </Select>
                 </div>
@@ -337,7 +497,9 @@ const SignupForm: React.FC = () => {
                         <SelectItem key={city} value={city}>
                           {city}
                         </SelectItem>
-                      ))}
+                      )) || (
+                        <SelectItem value="other">Other</SelectItem>
+                      )}
                     </SelectContent>
                   </Select>
                 </div>
@@ -366,6 +528,10 @@ const SignupForm: React.FC = () => {
               >
                 {loading ? "Sending..." : "Send Verification Code"}
               </Button>
+              
+              <p className="text-sm text-muted-foreground text-center">
+                For this demo, use verification code: <strong>123456</strong>
+              </p>
             </div>
           </form>
         ) : (
@@ -390,6 +556,9 @@ const SignupForm: React.FC = () => {
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
                   A verification code has been sent to your {verificationMethod === "email" ? "email" : "WhatsApp"}
+                </p>
+                <p className="text-xs font-medium text-emerald-600 mt-1">
+                  For this demo, use code: 123456
                 </p>
               </div>
               
