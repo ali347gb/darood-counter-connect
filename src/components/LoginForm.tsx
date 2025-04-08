@@ -6,15 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
-import { Mail, MessageCircle } from "lucide-react";
+import { Mail } from "lucide-react";
 
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [whatsappNumber, setWhatsappNumber] = useState("");
-  const [verificationCode, setVerificationCode] = useState("");
-  const [showVerification, setShowVerification] = useState(false);
-  const { loginWithGoogle, loginWithEmail, loginWithPhone, loading } = useAuth();
+  const { loginWithGoogle, loginWithEmail, loading } = useAuth();
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,21 +20,6 @@ const LoginForm: React.FC = () => {
       await loginWithEmail(email, password);
     } catch (error) {
       console.error("Email login error:", error);
-    }
-  };
-
-  const handleWhatsAppLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!showVerification) {
-      // For demo, we just show the verification code input
-      setShowVerification(true);
-      return;
-    }
-    
-    try {
-      await loginWithPhone(whatsappNumber, verificationCode);
-    } catch (error) {
-      console.error("WhatsApp login error:", error);
     }
   };
 
@@ -88,114 +70,48 @@ const LoginForm: React.FC = () => {
           </div>
           <div className="relative flex justify-center text-xs uppercase">
             <span className="bg-background px-2 text-muted-foreground">
-              Or continue with
+              Continue with email
             </span>
           </div>
         </div>
-
-        <Tabs defaultValue="email" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-4">
-            <TabsTrigger value="email">
-              <Mail className="w-4 h-4 mr-2" />
-              Email
-            </TabsTrigger>
-            <TabsTrigger value="whatsapp">
-              <MessageCircle className="w-4 h-4 mr-2" />
-              WhatsApp
-            </TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="email">
-            <form onSubmit={handleEmailLogin}>
-              <div className="grid gap-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="user@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    className="focus:border-emerald-500 focus:ring-emerald-500"
-                  />
-                </div>
-                
-                <div className="grid gap-2">
-                  <Label htmlFor="password">Password</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    className="focus:border-emerald-500 focus:ring-emerald-500"
-                  />
-                </div>
-                
-                <Button
-                  className="bg-emerald-600 hover:bg-emerald-700"
-                  disabled={loading || !email || !password}
-                  type="submit"
-                >
-                  {loading ? "Logging in..." : "Sign In"}
-                </Button>
-              </div>
-            </form>
-          </TabsContent>
-          
-          <TabsContent value="whatsapp">
-            <form onSubmit={handleWhatsAppLogin}>
-              <div className="grid gap-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="whatsapp">WhatsApp Number</Label>
-                  <Input
-                    id="whatsapp"
-                    type="tel"
-                    placeholder="+921234567890"
-                    value={whatsappNumber}
-                    onChange={(e) => setWhatsappNumber(e.target.value)}
-                    required
-                    disabled={showVerification}
-                    className="focus:border-emerald-500 focus:ring-emerald-500"
-                  />
-                </div>
-                
-                {showVerification && (
-                  <div className="grid gap-2">
-                    <Label htmlFor="code">Verification Code</Label>
-                    <Input
-                      id="code"
-                      type="text"
-                      placeholder="123456"
-                      value={verificationCode}
-                      onChange={(e) => setVerificationCode(e.target.value)}
-                      required
-                      maxLength={6}
-                      className="focus:border-emerald-500 focus:ring-emerald-500"
-                    />
-                    <p className="text-xs text-muted-foreground mt-1">
-                      For this demo, use verification code: <strong>123456</strong>
-                    </p>
-                  </div>
-                )}
-                
-                <Button
-                  className="bg-emerald-600 hover:bg-emerald-700"
-                  disabled={loading || (showVerification && verificationCode.length !== 6)}
-                  type="submit"
-                >
-                  {loading
-                    ? "Processing..."
-                    : !showVerification
-                    ? "Send Code to WhatsApp"
-                    : "Verify & Login"}
-                </Button>
-              </div>
-            </form>
-          </TabsContent>
-        </Tabs>
+        
+        <form onSubmit={handleEmailLogin}>
+          <div className="grid gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="user@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="focus:border-emerald-500 focus:ring-emerald-500"
+              />
+            </div>
+            
+            <div className="grid gap-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="focus:border-emerald-500 focus:ring-emerald-500"
+              />
+            </div>
+            
+            <Button
+              className="bg-emerald-600 hover:bg-emerald-700"
+              disabled={loading || !email || !password}
+              type="submit"
+            >
+              {loading ? "Logging in..." : "Sign In"}
+            </Button>
+          </div>
+        </form>
       </CardContent>
       <CardFooter className="flex flex-col items-center space-y-4">
         <p className="text-sm text-muted-foreground">
@@ -205,9 +121,7 @@ const LoginForm: React.FC = () => {
           </a>
         </p>
         <p className="text-xs text-muted-foreground">
-          For demo, use email: user3@example.com with any password,
-          <br />
-          or WhatsApp: +921234567890 with code 123456
+          For demo, use email: user3@example.com with any password
         </p>
       </CardFooter>
     </Card>

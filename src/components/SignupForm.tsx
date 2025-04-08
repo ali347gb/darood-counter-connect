@@ -119,7 +119,7 @@ const SignupForm: React.FC = () => {
           </div>
           <div className="relative flex justify-center text-xs uppercase">
             <span className="bg-background px-2 text-muted-foreground">
-              Or sign up with
+              Or sign up with email
             </span>
           </div>
         </div>

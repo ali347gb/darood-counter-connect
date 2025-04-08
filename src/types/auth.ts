@@ -18,7 +18,6 @@ export interface AuthContextType {
   isAdmin: boolean;
   loginWithGoogle: () => Promise<void>;
   loginWithEmail: (email: string, password: string) => Promise<void>;
-  loginWithPhone: (phoneNumber: string, verificationCode: string) => Promise<void>;
   registerWithEmail: (params: RegisterParams) => Promise<void>;
   logout: () => Promise<void>;
 }
