@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { WhatsApp } from "lucide-react";
+import { Phone } from "lucide-react";
 import { ProfileUpdateParams } from "@/types/auth";
 
 // List of countries for dropdown
@@ -104,7 +104,7 @@ const UserProfileForm: React.FC = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="whatsappNumber" className="flex items-center">
-              <WhatsApp className="w-4 h-4 mr-1" />
+              <Phone className="w-4 h-4 mr-1" />
               WhatsApp Number
             </Label>
             <Input

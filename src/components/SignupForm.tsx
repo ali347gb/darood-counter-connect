@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -80,11 +79,7 @@ const SignupForm: React.FC = () => {
         email: data.email,
         password: data.password,
         firstName: data.firstName,
-        lastName: data.lastName,
-        whatsappNumber: "", // Sending empty string for WhatsApp
-        country: "",
-        state: "",
-        city: ""
+        lastName: data.lastName
       });
       
       toast({
