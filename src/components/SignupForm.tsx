@@ -26,7 +26,6 @@ const SignupForm: React.FC = () => {
       firstName: "",
       lastName: "",
       email: "",
-      whatsappNumber: "",
       verificationMethod: "email",
       verificationCode: "",
       password: "",
@@ -82,7 +81,7 @@ const SignupForm: React.FC = () => {
         password: data.password,
         firstName: data.firstName,
         lastName: data.lastName,
-        whatsappNumber: data.whatsappNumber || "",
+        whatsappNumber: "", // Sending empty string for WhatsApp
         country: "",
         state: "",
         city: ""

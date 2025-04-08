@@ -50,10 +50,22 @@ body, html {
   -webkit-overflow-scrolling: touch;
 }
 
+/* Fix for dialog scrolling issues */
+[role="dialog"] {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
 /* Mobile optimizations */
 @media (max-width: 768px) {
   .container {
     padding-left: 0.5rem;
     padding-right: 0.5rem;
+  }
+  
+  /* Ensure dialogs are scrollable on mobile */
+  [role="dialog"] {
+    max-height: 80vh;
+    position: relative;
   }
 }
