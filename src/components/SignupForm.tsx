@@ -8,7 +8,6 @@ import { useForm, FormProvider } from "react-hook-form";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 import PersonalInfoStep from "./signup/PersonalInfoStep";
-import LocationSelector from "./signup/LocationSelector";
 import VerificationStep from "./signup/VerificationStep";
 import PasswordStep from "./signup/PasswordStep";
 import GoogleSignupButton from "./signup/GoogleSignupButton";
@@ -28,9 +27,6 @@ const SignupForm: React.FC = () => {
       lastName: "",
       email: "",
       whatsappNumber: "",
-      country: "",
-      state: "",
-      city: "",
       verificationMethod: "email",
       verificationCode: "",
       password: "",
@@ -42,32 +38,21 @@ const SignupForm: React.FC = () => {
   const { handleSubmit, watch, setValue, trigger, formState: { isValid } } = methods;
 
   const watchEmail = watch("email");
-  const watchWhatsappNumber = watch("whatsappNumber");
-  const watchVerificationMethod = watch("verificationMethod");
   const watchVerificationCode = watch("verificationCode");
   const watchPassword = watch("password");
   const watchConfirmPassword = watch("confirmPassword");
 
   const handleSendVerification = async () => {
-    const isValid = await trigger(["email", "whatsappNumber", "firstName", "lastName", "country", "state", "city"]);
+    const isValid = await trigger(["email", "firstName", "lastName"]);
     
     if (!isValid) {
       return;
     }
 
-    if (watchVerificationMethod === "email" && !watchEmail) {
+    if (!watchEmail) {
       toast({
         title: "Error",
         description: "Please enter an email address",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    if (watchVerificationMethod === "whatsapp" && !watchWhatsappNumber) {
-      toast({
-        title: "Error",
-        description: "Please enter a WhatsApp number",
         variant: "destructive"
       });
       return;
@@ -97,15 +82,15 @@ const SignupForm: React.FC = () => {
         password: data.password,
         firstName: data.firstName,
         lastName: data.lastName,
-        whatsappNumber: data.whatsappNumber,
-        country: data.country,
-        state: data.state,
-        city: data.city
+        whatsappNumber: data.whatsappNumber || "",
+        country: "",
+        state: "",
+        city: ""
       });
       
       toast({
         title: "Success",
-        description: "Your account has been created. Welcome to Markaz-e-Darood!",
+        description: "Your account has been created. Please update your profile with additional information.",
       });
       
       navigate("/dashboard");
@@ -144,7 +129,6 @@ const SignupForm: React.FC = () => {
           {!verificationSent ? (
             <div className="space-y-6">
               <PersonalInfoStep />
-              <LocationSelector />
               <VerificationStep 
                 onSubmit={handleSendVerification}
                 loading={loading}

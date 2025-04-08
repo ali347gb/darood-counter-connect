@@ -1,6 +1,6 @@
 
 import { useFormContext } from "react-hook-form";
-import { User, Mail, MessageCircle } from "lucide-react";
+import { User, Mail } from "lucide-react";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { SignupFormValues } from "@/schemas/signup-schema";
@@ -64,28 +64,6 @@ const PersonalInfoStep = () => {
               <Input
                 type="email"
                 placeholder="user@example.com"
-                className="focus:border-emerald-500 focus:ring-emerald-500"
-                {...field}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      
-      <FormField
-        control={control}
-        name="whatsappNumber"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>
-              <MessageCircle className="w-4 h-4 inline mr-1" />
-              WhatsApp Number
-            </FormLabel>
-            <FormControl>
-              <Input
-                type="tel"
-                placeholder="+921234567890"
                 className="focus:border-emerald-500 focus:ring-emerald-500"
                 {...field}
               />

@@ -1,10 +1,9 @@
 
 import { useFormContext } from "react-hook-form";
-import { Check, MessageCircle, Mail } from "lucide-react";
+import { Check, Mail } from "lucide-react";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SignupFormValues } from "@/schemas/signup-schema";
 
 interface VerificationStepProps {
@@ -15,10 +14,8 @@ interface VerificationStepProps {
 const VerificationStep = ({ onSubmit, loading }: VerificationStepProps) => {
   const { control, watch, setValue } = useFormContext<SignupFormValues>();
   
-  const verificationMethod = watch("verificationMethod");
   const verificationCode = watch("verificationCode");
   const email = watch("email");
-  const whatsappNumber = watch("whatsappNumber");
   
   // Helper function to handle demo verification code
   const handleDemoCode = () => {
@@ -27,40 +24,9 @@ const VerificationStep = ({ onSubmit, loading }: VerificationStepProps) => {
 
   return (
     <div className="grid gap-4">
-      <FormField
-        control={control}
-        name="verificationMethod"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Verification Method</FormLabel>
-            <Select
-              onValueChange={field.onChange}
-              value={field.value}
-            >
-              <FormControl>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select verification method" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent className="bg-white">
-                <SelectItem value="email">
-                  <div className="flex items-center">
-                    <Mail className="w-4 h-4 mr-2" />
-                    Email
-                  </div>
-                </SelectItem>
-                <SelectItem value="whatsapp">
-                  <div className="flex items-center">
-                    <MessageCircle className="w-4 h-4 mr-2" />
-                    WhatsApp
-                  </div>
-                </SelectItem>
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <p className="text-sm text-emerald-700">
+        We'll send a verification code to your email address.
+      </p>
       
       {verificationCode ? (
         <FormField
@@ -84,7 +50,7 @@ const VerificationStep = ({ onSubmit, loading }: VerificationStepProps) => {
                 )}
               </div>
               <p className="text-xs text-muted-foreground mt-1">
-                A verification code would be sent to your {verificationMethod === "email" ? "email" : "WhatsApp"} in a real application
+                A verification code would be sent to your email in a real application
               </p>
               <div className="mt-2">
                 <Button
@@ -104,7 +70,7 @@ const VerificationStep = ({ onSubmit, loading }: VerificationStepProps) => {
       ) : (
         <Button
           className="bg-emerald-600 hover:bg-emerald-700"
-          disabled={loading || (verificationMethod === "email" && !email) || (verificationMethod === "whatsapp" && !whatsappNumber)}
+          disabled={loading || !email}
           type="button"
           onClick={onSubmit}
         >

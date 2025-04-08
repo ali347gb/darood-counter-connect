@@ -20,32 +20,32 @@ const CounterStats: React.FC<CounterStatsProps> = ({ stats, title, subtitle }) =
         {subtitle && <p className="text-sm text-muted-foreground">{subtitle}</p>}
       </div>
       
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
         <Card className="bg-gradient-to-br from-emerald-50 to-white border-emerald-100">
-          <CardContent className="p-4 text-center">
-            <h3 className="text-sm font-medium text-emerald-700 mb-1">Today</h3>
-            <p className="text-2xl font-bold text-emerald-800">{formatNumber(stats.daily)}</p>
+          <CardContent className="p-3 md:p-4 text-center">
+            <h3 className="text-xs md:text-sm font-medium text-emerald-700 mb-1">Today</h3>
+            <p className="text-lg md:text-2xl font-bold text-emerald-800">{formatNumber(stats.daily)}</p>
           </CardContent>
         </Card>
         
         <Card className="bg-gradient-to-br from-emerald-50 to-white border-emerald-100">
-          <CardContent className="p-4 text-center">
-            <h3 className="text-sm font-medium text-emerald-700 mb-1">This Month</h3>
-            <p className="text-2xl font-bold text-emerald-800">{formatNumber(stats.monthly)}</p>
+          <CardContent className="p-3 md:p-4 text-center">
+            <h3 className="text-xs md:text-sm font-medium text-emerald-700 mb-1">This Month</h3>
+            <p className="text-lg md:text-2xl font-bold text-emerald-800">{formatNumber(stats.monthly)}</p>
           </CardContent>
         </Card>
 
         <Card className="bg-gradient-to-br from-emerald-50 to-white border-emerald-100">
-          <CardContent className="p-4 text-center">
-            <h3 className="text-sm font-medium text-emerald-700 mb-1">This Year</h3>
-            <p className="text-2xl font-bold text-emerald-800">{formatNumber(stats.annual)}</p>
+          <CardContent className="p-3 md:p-4 text-center">
+            <h3 className="text-xs md:text-sm font-medium text-emerald-700 mb-1">This Year</h3>
+            <p className="text-lg md:text-2xl font-bold text-emerald-800">{formatNumber(stats.annual)}</p>
           </CardContent>
         </Card>
 
         <Card className="bg-gradient-to-br from-gold-50 to-white border-gold-100">
-          <CardContent className="p-4 text-center">
-            <h3 className="text-sm font-medium text-gold-700 mb-1">Total</h3>
-            <p className="text-2xl font-bold text-gold-800">{formatNumber(stats.total)}</p>
+          <CardContent className="p-3 md:p-4 text-center">
+            <h3 className="text-xs md:text-sm font-medium text-gold-700 mb-1">Total</h3>
+            <p className="text-lg md:text-2xl font-bold text-gold-800">{formatNumber(stats.total)}</p>
           </CardContent>
         </Card>
       </div>

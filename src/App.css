@@ -1,8 +1,9 @@
+
 #root {
-  max-width: 1280px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
+  overflow-x: hidden;
 }
 
 .logo {
@@ -39,4 +40,20 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* Fix for mobile scrolling in admin pages */
+body, html {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
 }
