@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -44,6 +45,11 @@ const SignupForm: React.FC = () => {
     const isValid = await trigger(["email", "firstName", "lastName"]);
     
     if (!isValid) {
+      toast({
+        title: "Error",
+        description: "Please complete all required fields",
+        variant: "destructive"
+      });
       return;
     }
 
@@ -56,6 +62,7 @@ const SignupForm: React.FC = () => {
       return;
     }
 
+    // Set verification sent state to true to show the next step
     setVerificationSent(true);
     
     toast({
@@ -131,7 +138,7 @@ const SignupForm: React.FC = () => {
           ) : (
             <div className="space-y-6">
               <VerificationStep 
-                onSubmit={() => {}}
+                onSubmit={handleSendVerification}
                 loading={loading}
               />
               <PasswordStep 

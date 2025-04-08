@@ -68,14 +68,16 @@ const VerificationStep = ({ onSubmit, loading }: VerificationStepProps) => {
           )}
         />
       ) : (
-        <Button
-          className="bg-emerald-600 hover:bg-emerald-700"
-          disabled={loading || !email}
-          type="button"
-          onClick={onSubmit}
-        >
-          {loading ? "Sending..." : "Send Verification Code"}
-        </Button>
+        <>
+          <Button
+            className="bg-emerald-600 hover:bg-emerald-700"
+            disabled={loading || !email}
+            type="button"
+            onClick={() => onSubmit()}
+          >
+            {loading ? "Sending..." : "Send Verification Code"}
+          </Button>
+        </>
       )}
       
       {!verificationCode && (
