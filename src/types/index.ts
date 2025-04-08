@@ -49,6 +49,7 @@ export interface User {
   id: string;
   email?: string;
   phoneNumber?: string;
+  whatsappNumber?: string; // Adding WhatsApp number field
   name: string;
   role: UserRole;
   provider: "email" | "phone" | "google";

@@ -1,191 +1,188 @@
 
-import { Link } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
+import { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Menu, X, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  NavigationMenu,
-  NavigationMenuList,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
-import { cn } from "@/lib/utils";
-import { 
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger 
-} from "@/components/ui/dropdown-menu";
-import { ChevronDown, Menu } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useMobile } from "@/hooks/use-mobile";
 
 const Header = () => {
-  const { currentUser, logout, isAdmin } = useAuth();
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { currentUser, isAdmin, logout } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isMobile = useMobile();
+  
+  // Close mobile menu when changing routes
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
 
-  const handleLinkClick = () => {
-    setIsSheetOpen(false);
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   };
 
+  const NavLinks = () => (
+    <>
+      <Link 
+        to="/" 
+        className="text-emerald-700 hover:text-emerald-900 px-3 py-2 rounded-md text-sm font-medium"
+      >
+        Home
+      </Link>
+      <Link 
+        to="/dashboard" 
+        className="text-emerald-700 hover:text-emerald-900 px-3 py-2 rounded-md text-sm font-medium"
+      >
+        Dashboard
+      </Link>
+      <Link 
+        to="/media" 
+        className="text-emerald-700 hover:text-emerald-900 px-3 py-2 rounded-md text-sm font-medium"
+      >
+        Media
+      </Link>
+      <Link 
+        to="/library" 
+        className="text-emerald-700 hover:text-emerald-900 px-3 py-2 rounded-md text-sm font-medium"
+      >
+        Library
+      </Link>
+      {isAdmin && (
+        <Link 
+          to="/admin" 
+          className="text-amber-600 hover:text-amber-800 px-3 py-2 rounded-md text-sm font-medium"
+        >
+          Admin
+        </Link>
+      )}
+      {currentUser && (
+        <Link 
+          to="/profile" 
+          className="text-emerald-700 hover:text-emerald-900 px-3 py-2 rounded-md text-sm font-medium flex items-center"
+        >
+          <User className="w-4 h-4 mr-1" /> Profile
+        </Link>
+      )}
+    </>
+  );
+
   return (
-    <header className="bg-white shadow-md sticky top-0 z-10">
-      <div className="container mx-auto px-4 py-3">
-        <div className="flex justify-between items-center">
-          <Link to="/" className="text-2xl font-bold text-emerald-800">
-            Markaz-e-Darood
-          </Link>
-
-          {/* Desktop Navigation */}
-          <div className="hidden md:block">
-            <NavigationMenu>
-              <NavigationMenuList>
-                <NavigationMenuItem>
-                  <Link to="/" className={navigationMenuTriggerStyle()}>
-                    Home
-                  </Link>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <Link to="/about" className={navigationMenuTriggerStyle()}>
-                    About
-                  </Link>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <Link to="/library" className={navigationMenuTriggerStyle()}>
-                    Library
-                  </Link>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <Link to="/media" className={navigationMenuTriggerStyle()}>
-                    Media
-                  </Link>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <Link to="/contact" className={navigationMenuTriggerStyle()}>
-                    Contact
-                  </Link>
-                </NavigationMenuItem>
-                {isAdmin && (
-                  <NavigationMenuItem>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <button className={cn(navigationMenuTriggerStyle(), "bg-amber-100 hover:bg-amber-200 text-amber-800 flex items-center")}>
-                          Admin
-                          <ChevronDown className="ml-1 h-4 w-4" />
-                        </button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent className="bg-white">
-                        <DropdownMenuItem asChild>
-                          <Link to="/admin" className="cursor-pointer">Dashboard</Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                          <Link to="/admin/reports" className="cursor-pointer">Reports</Link>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </NavigationMenuItem>
-                )}
-              </NavigationMenuList>
-            </NavigationMenu>
+    <header className="bg-white shadow-sm">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo/Brand */}
+          <div className="flex items-center">
+            <Link to="/" className="flex items-center">
+              <span className="text-emerald-600 font-bold text-xl mr-1">Darood</span>
+              <span className="text-amber-600 font-bold text-xl">Counter</span>
+            </Link>
           </div>
 
-          {/* Mobile Navigation */}
-          <div className="md:hidden">
-            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <Menu className="h-6 w-6 text-emerald-800" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[75vw] sm:w-[350px] py-6">
-                <nav className="flex flex-col gap-4">
-                  <Link to="/" className="text-lg font-medium hover:text-emerald-700" onClick={handleLinkClick}>
-                    Home
-                  </Link>
-                  <Link to="/about" className="text-lg font-medium hover:text-emerald-700" onClick={handleLinkClick}>
-                    About
-                  </Link>
-                  <Link to="/library" className="text-lg font-medium hover:text-emerald-700" onClick={handleLinkClick}>
-                    Library
-                  </Link>
-                  <Link to="/media" className="text-lg font-medium hover:text-emerald-700" onClick={handleLinkClick}>
-                    Media
-                  </Link>
-                  <Link to="/contact" className="text-lg font-medium hover:text-emerald-700" onClick={handleLinkClick}>
-                    Contact
-                  </Link>
-                  {currentUser && (
-                    <Link to="/dashboard" className="text-lg font-medium hover:text-emerald-700" onClick={handleLinkClick}>
-                      Dashboard
-                    </Link>
-                  )}
-                  {isAdmin && (
-                    <div className="border-t border-gray-200 mt-2 pt-4">
-                      <h3 className="font-semibold text-amber-800 mb-2">Admin</h3>
-                      <div className="flex flex-col gap-2 pl-2">
-                        <Link to="/admin" className="text-lg font-medium hover:text-emerald-700" onClick={handleLinkClick}>
-                          Dashboard
-                        </Link>
-                        <Link to="/admin/reports" className="text-lg font-medium hover:text-emerald-700" onClick={handleLinkClick}>
-                          Reports
-                        </Link>
-                        <Link to="/admin/edit-counters" className="text-lg font-medium hover:text-emerald-700" onClick={handleLinkClick}>
-                          Edit Counters
-                        </Link>
-                      </div>
-                    </div>
-                  )}
-                </nav>
-                {currentUser && (
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      logout();
-                      setIsSheetOpen(false);
-                    }}
-                    className="mt-6 w-full text-emerald-700 border-emerald-200"
-                  >
-                    Logout
-                  </Button>
-                )}
-                {!currentUser && (
-                  <Link to="/login" onClick={handleLinkClick} className="block mt-6">
-                    <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">
-                      Login
-                    </Button>
-                  </Link>
-                )}
-              </SheetContent>
-            </Sheet>
-          </div>
-
-          {/* Desktop Login/Logout Buttons */}
-          <div className="hidden md:flex items-center space-x-4">
+          {/* Desktop navigation */}
+          <nav className="hidden md:block">
+            <div className="flex items-center space-x-2">
+              <NavLinks />
+            </div>
+          </nav>
+          
+          {/* Auth buttons or user info */}
+          <div className="hidden md:flex items-center">
             {currentUser ? (
-              <>
-                <Link to="/dashboard">
-                  <Button variant="outline" className="text-emerald-700 border-emerald-200">
-                    Dashboard
-                  </Button>
-                </Link>
+              <div className="flex items-center">
+                <span className="text-sm text-gray-600 mr-4">
+                  {currentUser.name}
+                </span>
                 <Button
-                  variant="ghost"
-                  onClick={logout}
-                  className="text-emerald-700 hover:bg-emerald-50"
+                  variant="outline"
+                  className="border-emerald-500 text-emerald-600 hover:bg-emerald-50"
+                  onClick={handleLogout}
                 >
                   Logout
                 </Button>
-              </>
+              </div>
             ) : (
-              <Link to="/login">
-                <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">
-                  Login
+              <div className="space-x-2">
+                <Button
+                  variant="outline"
+                  className="border-emerald-500 text-emerald-600 hover:bg-emerald-50"
+                  asChild
+                >
+                  <Link to="/login">Login</Link>
                 </Button>
-              </Link>
+                <Button 
+                  className="bg-emerald-600 hover:bg-emerald-700" 
+                  asChild
+                >
+                  <Link to="/signup">Sign Up</Link>
+                </Button>
+              </div>
             )}
+          </div>
+          
+          {/* Mobile menu button */}
+          <div className="md:hidden flex items-center">
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="text-gray-700 hover:text-emerald-600 focus:outline-none"
+            >
+              {mobileMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </button>
           </div>
         </div>
       </div>
+      
+      {/* Mobile menu */}
+      {mobileMenuOpen && (
+        <div className="md:hidden bg-white pt-2 pb-3 space-y-1 px-4 shadow-lg">
+          <div className="space-y-1 py-2">
+            <NavLinks />
+          </div>
+          
+          {/* Auth buttons for mobile */}
+          <div className="pt-4 border-t border-gray-200">
+            {currentUser ? (
+              <div className="flex flex-col space-y-2">
+                <span className="text-sm text-gray-600">
+                  {currentUser.name}
+                </span>
+                <Button
+                  variant="outline"
+                  className="border-emerald-500 text-emerald-600 hover:bg-emerald-50"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </Button>
+              </div>
+            ) : (
+              <div className="flex flex-col space-y-2">
+                <Button
+                  variant="outline"
+                  className="border-emerald-500 text-emerald-600 hover:bg-emerald-50"
+                  asChild
+                >
+                  <Link to="/login">Login</Link>
+                </Button>
+                <Button 
+                  className="bg-emerald-600 hover:bg-emerald-700" 
+                  asChild
+                >
+                  <Link to="/signup">Sign Up</Link>
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </header>
   );
 };

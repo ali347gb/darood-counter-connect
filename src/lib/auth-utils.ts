@@ -1,6 +1,6 @@
 
 import { User } from "@/types";
-import { RegisterParams } from "@/types/auth";
+import { RegisterParams, ProfileUpdateParams } from "@/types/auth";
 import { mockUsers } from "@/lib/mock-data";
 
 export const loginWithGoogleUtil = async (): Promise<User> => {
@@ -35,17 +35,31 @@ export const registerWithEmailUtil = async (params: RegisterParams): Promise<Use
     id: `user-${Date.now()}`,
     name: `${params.firstName} ${params.lastName}`,
     email: params.email,
-    phoneNumber: params.whatsappNumber,
     provider: "email",
     role: "user",
     photoURL: "",
-    location: {
-      country: params.country,
-      city: params.city
-    },
   };
   
   return newUser;
+};
+
+export const updateProfileUtil = async (userId: string, params: ProfileUpdateParams): Promise<User> => {
+  await new Promise(resolve => setTimeout(resolve, 500));
+  
+  // In a real app, this would update a database
+  // For now, we'll just return a mock updated user
+  return {
+    id: userId,
+    email: "user@example.com",
+    name: "User Name",
+    role: "user",
+    provider: "email",
+    whatsappNumber: params.whatsappNumber,
+    location: {
+      country: params.country,
+      city: params.city
+    }
+  };
 };
 
 export const logoutUtil = async (): Promise<void> => {

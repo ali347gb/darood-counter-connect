@@ -6,10 +6,12 @@ export interface RegisterParams {
   password: string;
   firstName: string;
   lastName: string;
-  whatsappNumber: string;
-  country: string;
-  state: string;
-  city: string;
+}
+
+export interface ProfileUpdateParams {
+  whatsappNumber?: string;
+  country?: string;
+  city?: string;
 }
 
 export interface AuthContextType {
@@ -19,5 +21,6 @@ export interface AuthContextType {
   loginWithGoogle: () => Promise<void>;
   loginWithEmail: (email: string, password: string) => Promise<void>;
   registerWithEmail: (params: RegisterParams) => Promise<void>;
+  updateProfile: (params: ProfileUpdateParams) => Promise<void>;
   logout: () => Promise<void>;
 }

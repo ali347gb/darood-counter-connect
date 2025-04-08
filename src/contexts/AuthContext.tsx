@@ -1,12 +1,11 @@
 
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { User } from "@/types";
-import { AuthContextType, RegisterParams } from "@/types/auth";
+import { AuthContextType, RegisterParams, ProfileUpdateParams } from "@/types/auth";
 import { useToast } from "@/hooks/use-toast";
 import { 
   loginWithGoogleUtil, 
-  loginWithEmailUtil, 
-  loginWithPhoneUtil, 
+  loginWithEmailUtil,
   registerWithEmailUtil,
   logoutUtil
 } from "@/lib/auth-utils";
@@ -88,27 +87,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const loginWithPhone = async (phoneNumber: string, verificationCode: string): Promise<void> => {
-    setLoading(true);
-    try {
-      const user = await loginWithPhoneUtil(phoneNumber, verificationCode);
-      setCurrentUser(user);
-      toast({
-        title: "Login Successful",
-        description: "Welcome back!",
-      });
-    } catch (error) {
-      toast({
-        title: "Login Failed",
-        description: "Invalid phone number or verification code",
-        variant: "destructive"
-      });
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const registerWithEmail = async (params: RegisterParams): Promise<void> => {
     setLoading(true);
     try {
@@ -123,6 +101,37 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       toast({
         title: "Registration Failed",
         description: "Could not create your account",
+        variant: "destructive"
+      });
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateProfile = async (params: ProfileUpdateParams): Promise<void> => {
+    setLoading(true);
+    try {
+      // In a real app, this would call an API endpoint
+      // For now, we'll just update the local state
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      if (currentUser) {
+        const updatedUser: User = {
+          ...currentUser,
+          whatsappNumber: params.whatsappNumber || currentUser.whatsappNumber,
+          location: {
+            country: params.country || currentUser.location?.country || '',
+            city: params.city || currentUser.location?.city || ''
+          }
+        };
+        
+        setCurrentUser(updatedUser);
+      }
+    } catch (error) {
+      toast({
+        title: "Update Failed",
+        description: "Could not update your profile",
         variant: "destructive"
       });
       throw error;
@@ -155,8 +164,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     isAdmin,
     loginWithGoogle,
     loginWithEmail,
-    loginWithPhone,
     registerWithEmail,
+    updateProfile,
     logout,
   };
 
