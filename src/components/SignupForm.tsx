@@ -133,6 +133,7 @@ const SignupForm: React.FC = () => {
               <VerificationStep 
                 onSubmit={handleSendVerification}
                 loading={loading}
+                verificationSent={verificationSent} 
               />
             </div>
           ) : (
@@ -140,6 +141,7 @@ const SignupForm: React.FC = () => {
               <VerificationStep 
                 onSubmit={handleSendVerification}
                 loading={loading}
+                verificationSent={verificationSent}
               />
               <PasswordStep 
                 onSubmit={handleSubmit(onSubmit)}

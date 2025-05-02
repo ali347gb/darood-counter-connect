@@ -9,9 +9,10 @@ import { SignupFormValues } from "@/schemas/signup-schema";
 interface VerificationStepProps {
   onSubmit: () => void;
   loading: boolean;
+  verificationSent: boolean; // Add this prop to track if verification was sent
 }
 
-const VerificationStep = ({ onSubmit, loading }: VerificationStepProps) => {
+const VerificationStep = ({ onSubmit, loading, verificationSent }: VerificationStepProps) => {
   const { control, watch, setValue } = useFormContext<SignupFormValues>();
   
   const verificationCode = watch("verificationCode");
@@ -28,7 +29,7 @@ const VerificationStep = ({ onSubmit, loading }: VerificationStepProps) => {
         We'll send a verification code to your email address.
       </p>
       
-      {verificationCode ? (
+      {verificationSent ? (
         <FormField
           control={control}
           name="verificationCode"
@@ -45,7 +46,7 @@ const VerificationStep = ({ onSubmit, loading }: VerificationStepProps) => {
                     {...field}
                   />
                 </FormControl>
-                {verificationCode.length === 6 && (
+                {verificationCode?.length === 6 && (
                   <Check className="w-5 h-5 text-green-500" />
                 )}
               </div>
@@ -73,14 +74,14 @@ const VerificationStep = ({ onSubmit, loading }: VerificationStepProps) => {
             className="bg-emerald-600 hover:bg-emerald-700"
             disabled={loading || !email}
             type="button"
-            onClick={() => onSubmit()}
+            onClick={onSubmit}
           >
             {loading ? "Sending..." : "Send Verification Code"}
           </Button>
         </>
       )}
       
-      {!verificationCode && (
+      {!verificationSent && (
         <div className="bg-amber-50 border border-amber-200 rounded-md p-3 text-sm">
           <p className="font-medium text-amber-800">Demo Note:</p>
           <p className="text-amber-700">
